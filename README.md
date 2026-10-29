@@ -9,8 +9,8 @@ A free, responsive retro browser-game portal inspired by classic NES-era arcades
 - **2048 Pixel** — merge tiles; keyboard, swipe and on-screen directional controls; undo and best score.
 - **Tic Tac Toe** — two-player classic with win/draw tracking.
 - **Pixel Racer** — lane-based traffic dodging with keyboard and touch controls, pause and local best score.
-- **Star Blaster** — space shooter with movement, fire, lives and pause; keyboard and touch controls.
-- **Brick Breaker** — paddle and ball arcade game with keyboard, drag and touch buttons.
+- **Star Blaster** — space shooter with movement, fire, lives, pause and score-based difficulty levels; keyboard and touch controls.
+- **Brick Breaker** — five-stage campaign with tougher bricks in later levels, keyboard, drag and touch buttons.
 - **Memory Match** — responsive card matching with move count and pair tracking.
 - **Pixel Jumper** — side-view platform jumping, coins, enemies and touch controls.
 - **Maze Runner** — randomized maze generation, key collection and exit objective.
@@ -21,10 +21,10 @@ A free, responsive retro browser-game portal inspired by classic NES-era arcades
 ## Portal features
 
 - Classic 8-bit NES-inspired palette and consistent shared styles, branding and favicon.
-- Responsive layout for desktops, tablets and phones.
+- Responsive layout for desktops, tablets and phones, with compact 44px touch targets and a shared install/offline status utility.
 - Search, category filters, favorites saved locally, and an install prompt when supported.
 - Browser-local progress; no account or backend needed.
-- Web app manifest and service worker for offline use after the first successful visit and cache installation.
+- Web app manifest and service worker precache all game pages and shared assets for offline play after the first successful online visit; an install button explains browser-specific installation steps.
 - Keyboard and compact touch controls on supported games; reduced-motion-friendly UI.
 
 ## Run locally
