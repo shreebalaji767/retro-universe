@@ -24,10 +24,11 @@ function checkTarget(fromFile, raw, label) {
   const value = raw.trim();
   if (!value || value.startsWith('#') || /^(?:https?:|mailto:|tel:|data:|javascript:|blob:)/i.test(value)) return;
   let pathname;
-  try { pathname = decodeURIComponent(new URL(value, 'https://local.test/').pathname); }
+  try { pathname = decodeURIComponent(value.split(/[?#]/, 1)[0]); }
   catch { failures.push(`${path.relative(root, fromFile)}: invalid ${label} "${value}"`); return; }
-  const relative = pathname.replace(/^\/+/, '');
-  const target = path.resolve(path.dirname(fromFile), relative);
+  const target = pathname.startsWith('/')
+    ? path.resolve(root, pathname.replace(/^\\/+/, ''))
+    : path.resolve(path.dirname(fromFile), pathname);
   if (!target.startsWith(root + path.sep) && target !== root) {
     failures.push(`${path.relative(root, fromFile)}: ${label} escapes repository: "${value}"`);
     return;
