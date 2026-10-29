@@ -1,4 +1,4 @@
-const CACHE='retro-universe-v14';
+const CACHE='retro-universe-v15';
 const FILES=['index.html','arcade.html','puzzles.html','classics.html','player.html','style.css','js/player.js','js/game.js','js/app.js','js/game-enhancements.js','assets/favicon.svg','assets/retro-universe-logo.svg','manifest.webmanifest','games/tic-tac-toe.html','games/snake.html','games/2048.html','games/tetris.html','games/racer.html','games/space-shooter.html','games/breakout.html','games/memory-match.html','games/platformer.html','games/maze-runner.html','games/pong.html','games/minesweeper.html','games/simon.html','games/bomber-maze.html','games/frogger.html','games/asteroids.html'];
 const scopedURL=path=>new URL(path,self.registration.scope).href;
 self.addEventListener('install',event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.all(FILES.map(async path=>{try{const response=await fetch(scopedURL(path),{cache:'reload'});if(response.ok)await cache.put(scopedURL(path),response)}catch(error){/* One unavailable file must not block the whole offline update. */}}));await self.skipWaiting()})())});
