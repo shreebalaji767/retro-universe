@@ -1,0 +1,13 @@
+{
+  "name": "Retro Universe 8-Bit Arcade",
+  "short_name": "Retro Arcade",
+  "description": "Free retro browser games.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101b35",
+  "theme_color": "#101b35",
+  "icons": [
+    { "src": "assets/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
