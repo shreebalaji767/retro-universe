@@ -7,7 +7,7 @@ A free, responsive retro browser-game portal inspired by classic NES-era arcades
 - **Tetris DX** — falling blocks, rotation, line clears, score and levels; keyboard and touch controls.
 - **Snake 198X** — keyboard/WASD, directional buttons and swipe controls; local best score.
 - **2048 Pixel** — merge tiles; keyboard, swipe and on-screen directional controls; undo and best score.
-- **Tic Tac Toe** — two-player classic with win/draw tracking.
+- **Tic Tac Toe** — solo play against Easy/Normal/Hard JavaScript AI or same-device two-player mode, with win/draw tracking.
 - **Pixel Racer** — lane-based traffic dodging with keyboard and touch controls, pause and local best score.
 - **Star Blaster** — space shooter with movement, fire, lives, pause and score-based difficulty levels; keyboard and touch controls.
 - **Brick Breaker** — five-stage campaign with tougher bricks in later levels, keyboard, drag and touch buttons.
