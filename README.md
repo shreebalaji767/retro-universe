@@ -12,6 +12,11 @@ A free, responsive retro browser-game portal inspired by classic NES-era arcades
 - **Star Blaster** — space shooter with movement, fire, lives and pause; keyboard and touch controls.
 - **Brick Breaker** — paddle and ball arcade game with keyboard, drag and touch buttons.
 - **Memory Match** — responsive card matching with move count and pair tracking.
+- **Pixel Jumper** — side-view platform jumping, coins, enemies and touch controls.
+- **Maze Runner** — randomized maze generation, key collection and exit objective.
+- **Pixel Pong** — paddle-versus-CPU match with keyboard, touch buttons and drag.
+- **Pixel Mines** — Minesweeper-style puzzle with safe reveals and flag mode.
+- **Simon Says** — sequence memory game with responsive color pads.
 
 ## Portal features
 
