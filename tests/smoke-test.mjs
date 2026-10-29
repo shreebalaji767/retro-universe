@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import vm from 'node:vm';
 import { spawnSync } from 'node:child_process';
 
 const root = process.cwd();
@@ -58,9 +59,23 @@ for (const file of jsFiles) {
   const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
   if (result.status !== 0) failures.push(`${path.relative(root, file)}: JavaScript syntax error\n${result.stderr || result.stdout}`);
 }
+// Exercise the shared computer opponent's tactical logic without a browser or external service.
+try {
+  const aiContext = { window: {} };
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'js/game.js'), 'utf8'), aiContext);
+  const ai = aiContext.window.RetroGame;
+  const winMove = ai.chooseTicTacToeMove(['X','X','','O','O','','','',''], 'O', 'X', 'hard');
+  if (winMove !== 5) failures.push(`Tic-Tac-Toe hard AI missed immediate winning move (got ${winMove})`);
+  const blockMove = ai.chooseTicTacToeMove(['X','X','','O','','','','',''], 'O', 'X', 'hard');
+  if (blockMove !== 2) failures.push(`Tic-Tac-Toe hard AI failed to block immediate loss (got ${blockMove})`);
+  const draw = ai.winner(['X','O','X','X','O','O','O','X','X']);
+  if (draw !== 'draw') failures.push(`Tic-Tac-Toe winner detection failed draw case (got ${draw})`);
+} catch (error) {
+  failures.push(`Tic-Tac-Toe AI logic test failed: ${error.message}`);
+}
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
   process.exitCode = 1;
 } else {
-  console.log(`Smoke tests passed: ${htmlFiles.length} HTML pages, ${jsFiles.length} JavaScript files, ${checkedLinks.size} internal references.`);
+  console.log(`Smoke tests passed: ${htmlFiles.length} HTML pages, ${jsFiles.length} JavaScript files, ${checkedLinks.size} internal references, plus Tic-Tac-Toe AI tactical checks.`);
 }
