@@ -16,7 +16,7 @@ A free, responsive retro browser-game portal inspired by classic NES-era arcades
 - **Maze Runner** — randomized maze generation, key collection and exit objective.
 - **Pixel Pong** — paddle-versus-CPU match with keyboard, touch buttons and drag.
 - **Pixel Mines** — Minesweeper-style puzzle with safe reveals and flag mode.
-- **Simon Says** — sequence memory game with responsive color pads.
+- **Simon Says** — sequence memory game with responsive color pads.\n- **Pixel Asteroids** — rotate, thrust and shoot, with splitting rocks and waves.\n- **Pixel Crossing** — frogger-style road and river crossing with multiple safe bays.\n- **Bomber Maze** — destructible blocks, timed bombs and escape-focused maze action.
 
 ## Portal features
 
