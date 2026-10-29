@@ -27,7 +27,7 @@ function checkTarget(fromFile, raw, label) {
   try { pathname = decodeURIComponent(value.split(/[?#]/, 1)[0]); }
   catch { failures.push(`${path.relative(root, fromFile)}: invalid ${label} "${value}"`); return; }
   const target = pathname.startsWith('/')
-    ? path.resolve(root, pathname.replace(/^\\/+/, ''))
+    ? path.resolve(root, pathname.slice(1))
     : path.resolve(path.dirname(fromFile), pathname);
   if (!target.startsWith(root + path.sep) && target !== root) {
     failures.push(`${path.relative(root, fromFile)}: ${label} escapes repository: "${value}"`);
