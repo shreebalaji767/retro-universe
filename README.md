@@ -1,18 +1,35 @@
-# Retro Universe — Pixel Arcade
+# Retro Universe — 8-Bit Arcade
 
-A free retro-inspired browser gaming portal made with HTML, CSS, and vanilla JavaScript.
+A free, responsive retro browser-game portal inspired by classic NES-era arcades. Built with vanilla HTML, CSS, JavaScript, Canvas, and browser storage—no paid APIs, external game libraries, accounts, ads, subscriptions, or pay-to-win systems.
 
 ## Games
-- Tic Tac Toe — two-player classic, win/draw tracking.
-- Snake — keyboard, WASD, touch buttons and swipe controls; local best score.
-- 2048 — arrow/WASD and swipe controls, score, best score, undo.
-- Tetris DX — falling blocks, rotation, line clears, scoring and levels, plus mobile controls.
 
-## Features
-- Consistent pixel-arcade look across all games.
-- Search, category filters, favorites saved in local storage.
-- Responsive desktop, tablet and mobile layout.
-- No paid APIs, external libraries, accounts, ads or backend.
+- **Tetris DX** — falling blocks, rotation, line clears, score and levels; keyboard and touch controls.
+- **Snake 198X** — keyboard/WASD, directional buttons and swipe controls; local best score.
+- **2048 Pixel** — merge tiles; keyboard, swipe and on-screen directional controls; undo and best score.
+- **Tic Tac Toe** — two-player classic with win/draw tracking.
+- **Pixel Racer** — lane-based traffic dodging with keyboard and touch controls, pause and local best score.
+- **Star Blaster** — space shooter with movement, fire, lives and pause; keyboard and touch controls.
+- **Brick Breaker** — paddle and ball arcade game with keyboard, drag and touch buttons.
+- **Memory Match** — responsive card matching with move count and pair tracking.
+
+## Portal features
+
+- Classic 8-bit NES-inspired palette and consistent shared styles, branding and favicon.
+- Responsive layout for desktops, tablets and phones.
+- Search, category filters, favorites saved locally, and an install prompt when supported.
+- Browser-local progress; no account or backend needed.
+- Web app manifest and service worker for offline use after the first successful visit and cache installation.
+- Keyboard and compact touch controls on supported games; reduced-motion-friendly UI.
+
+## Run locally
+
+Open `index.html` through a static HTTP server for service-worker/PWA features. Individual game HTML files can also be opened directly for gameplay, but browsers only enable service workers in secure contexts (HTTPS or localhost).
 
 ## GitHub Pages
-Open repository Settings → Pages, select Deploy from a branch, choose main and /(root), then save. Wait for the deployment to complete and open the published URL.
+
+Open **Settings → Pages**, choose the publishing source for `main` and `/(root)`, then save. GitHub Pages publishes static files from the selected source. Check the repository's **Actions → pages build and deployment** workflow for the actual deployment result.
+
+## Testing notes
+
+The project uses no build step. JavaScript syntax and internal file references should be smoke-tested after changes; browser gameplay still needs real keyboard/touch testing on target devices. Scores and favorites are stored per browser/device and do not sync across devices.
