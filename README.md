@@ -20,6 +20,9 @@ A free, responsive retro browser-game portal inspired by classic NES-era arcades
 
 ## Portal features
 
+- Animated, orbiting 3D-style 8-bit Retro Universe wordmark, used across the landing page and all game headers, with a matching retro favicon.
+- Retro arcade landing screen with pixel stars, planet, floating clouds, coin effects, responsive start button, and reduced-motion support.
+
 - Classic 8-bit NES-inspired palette and consistent shared styles, branding and favicon.
 - Responsive layout for desktops, tablets and phones, with compact 44px touch targets and a shared install/offline status utility.
 - Search, category filters, favorites saved locally, and an install prompt when supported.
