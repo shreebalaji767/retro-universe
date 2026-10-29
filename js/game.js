@@ -18,9 +18,9 @@
       board[i]='';
       moves.push({index:i,score:value});
     }
-    const best=Math.max(...moves.map(m=>turn===ai?m.score:-m.score));
-    const candidates=moves.filter(m=>(turn===ai?m.score:-m.score)===best);
-    return {score:turn===ai?best:-best,index:candidates[Math.floor(Math.random()*candidates.length)]?.index};
+    const best=turn===ai?Math.max(...moves.map(m=>m.score)):Math.min(...moves.map(m=>m.score));
+    const candidates=moves.filter(m=>m.score===best);
+    return {score:best,index:candidates[Math.floor(Math.random()*candidates.length)]?.index};
   }
   function chooseTicTacToeMove(cells,ai='O',human='X',difficulty='hard'){
     const board=cells.slice(),empty=board.map((v,i)=>v?'':i).filter(v=>v!=='');
