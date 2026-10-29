@@ -7,6 +7,23 @@ setNetwork();addEventListener('online',setNetwork);addEventListener('offline',se
 if(!isHome){const header=document.querySelector('header');if(header){const group=document.createElement('div');group.className='ru-utility-group';group.append(install,net);header.append(group)}}else{const actions=document.querySelector('.hero-actions');if(actions){const status=document.createElement('span');status.className='ru-network-home';status.append(net);actions.append(status)}}
 function installHelp(){const apple=/iphone|ipad|ipod/i.test(navigator.userAgent);const msg=apple?'Install on iPhone/iPad: tap Share in Safari, then “Add to Home Screen”.':'Open your browser menu and choose “Install app” or “Add to Home screen” if available.';let box=document.querySelector('#ru-install-help');if(!box){box=document.createElement('p');box.id='ru-install-help';box.className='ru-install-help';box.setAttribute('role','status');install.insertAdjacentElement('afterend',box)}box.textContent=msg;box.hidden=false}
 if(!isHome){addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;install.hidden=false;install.textContent='＋ INSTALL APP'});addEventListener('appinstalled',()=>{deferredPrompt=null;install.hidden=true});install.addEventListener('click',async()=>{if(deferredPrompt){deferredPrompt.prompt();try{await deferredPrompt.userChoice}catch(e){}deferredPrompt=null}else installHelp()});install.hidden=false;}
+// Keep the daily quest consistent across every game page. Some older pages used an 8-game list.
+if(!isHome&&body.dataset.game){
+  try{
+    const today=new Date().toISOString().slice(0,10);
+    const dailyGames=['tetris','snake','2048','tic-tac-toe','racer','space-shooter','breakout','memory-match','platformer','maze-runner','pong','minesweeper','simon','asteroids','frogger','bomber-maze'];
+    const featured=dailyGames[Number(today.replace(/-/g,''))%dailyGames.length];
+    const completed=JSON.parse(localStorage.getItem('retro-daily-complete')||'""');
+    const completedGame=localStorage.getItem('retro-daily-game')||'';
+    if(body.dataset.game===featured){
+      localStorage.setItem('retro-daily-complete',JSON.stringify(today));
+      localStorage.setItem('retro-daily-game',featured);
+    }else if(completed===today&&completedGame!==featured){
+      // Clear a false completion written by an older, shorter daily-game list.
+      localStorage.removeItem('retro-daily-complete');
+    }
+  }catch(error){/* Private browsing/storage restrictions must not block gameplay. */}
+}
 if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register(body.dataset.game?'../sw.js':'sw.js').catch(()=>{}));
 document.querySelectorAll('canvas').forEach(c=>{c.style.maxWidth='100%';c.style.height='auto';c.style.touchAction='none';c.setAttribute('tabindex','0');if(!c.hasAttribute('aria-label'))c.setAttribute('aria-label','Interactive game board')});
 document.querySelectorAll('button').forEach(b=>{if(!b.hasAttribute('type'))b.type='button';b.style.touchAction='manipulation'});
