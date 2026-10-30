@@ -1,0 +1,8 @@
+(()=>{'use strict';
+const canvas=document.querySelector('canvas');if(!canvas||document.querySelector('.touch'))return;
+const wrap=document.createElement('section');wrap.className='ru-touch-pad';wrap.setAttribute('aria-label','Touch controls');
+wrap.innerHTML='<div class="ru-touch-dpad"><button type="button" data-key="ArrowUp" aria-label="Move up">▲</button><button type="button" data-key="ArrowLeft" aria-label="Move left">◀</button><button type="button" data-key="ArrowDown" aria-label="Move down">▼</button><button type="button" data-key="ArrowRight" aria-label="Move right">▶</button></div><div class="ru-touch-actions"><button type="button" data-key=" " aria-label="Action or jump">A</button><button type="button" data-key="Enter" aria-label="Start or confirm">B</button></div><p>Touch controls send keyboard input to the game. Use game-specific controls when available.</p>';
+canvas.insertAdjacentElement('afterend',wrap);
+const send=(key,type)=>{const target=canvas;try{target.focus({preventScroll:true})}catch{target.focus()}const event=new KeyboardEvent(type,{key,code:key===' '?'Space':key,bubbles:true,cancelable:true});document.dispatchEvent(event);};
+wrap.querySelectorAll('button[data-key]').forEach(btn=>{const key=btn.dataset.key;btn.addEventListener('pointerdown',e=>{e.preventDefault();send(key,'keydown')});['pointerup','pointercancel','pointerleave'].forEach(type=>btn.addEventListener(type,()=>send(key,'keyup')));btn.addEventListener('click',e=>e.preventDefault())});
+})();
