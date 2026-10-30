@@ -100,3 +100,16 @@ html[data-effects=off] *,html[data-effects=off] *::before,html[data-effects=off]
 #ru-import{max-width:100%;color:var(--text);background:var(--panel)}
 @media(max-width:560px){.ru-progress-head{font-size:12px}.ru-badge-list{gap:5px}.ru-badge-list .player-badge{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.ru-progress-track>span{transition:none}}
+
+/* Shared touch pad for canvas games without built-in directional controls */
+.ru-touch-pad{display:none;max-width:420px;margin:14px auto;padding:10px;border:2px dashed var(--line);background:var(--panel2);gap:12px;align-items:center;justify-content:center}
+.ru-touch-pad p{font-size:9px;color:var(--muted);margin:0;max-width:150px}
+.ru-touch-dpad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px);gap:5px}
+.ru-touch-dpad button{min-height:44px;padding:4px;background:var(--bg);color:var(--green);border:2px solid var(--line);box-shadow:2px 2px 0 var(--shadow);touch-action:none;user-select:none;-webkit-user-select:none}
+.ru-touch-dpad button:nth-child(1){grid-column:2;grid-row:1}
+.ru-touch-dpad button:nth-child(2){grid-column:1;grid-row:2}
+.ru-touch-dpad button:nth-child(3){grid-column:2;grid-row:2}
+.ru-touch-dpad button:nth-child(4){grid-column:3;grid-row:2}
+.ru-touch-actions{display:flex;gap:8px}
+.ru-touch-actions button{width:48px;height:48px;border-radius:50%;padding:0;background:var(--red);color:white;touch-action:none;user-select:none;-webkit-user-select:none}
+@media(max-width:700px),(pointer:coarse){.ru-touch-pad{display:flex;flex-wrap:wrap}.ru-touch-pad button{min-width:44px;min-height:44px}}
