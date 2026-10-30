@@ -34,7 +34,8 @@ function checkTarget(fromFile, raw, label) {
     failures.push(`${path.relative(root, fromFile)}: ${label} escapes repository: "${value}"`);
     return;
   }
-  const key = `${fromFile} -> ${target}`;
+  const fragmentKey = value.split('#')[1]?.split('?')[0] || '';
+  const key = `${fromFile} -> ${target}#${fragmentKey}`;
   if (checkedLinks.has(key)) return;
   checkedLinks.add(key);
   if (!fs.existsSync(target) || !fs.statSync(target).isFile()) {
