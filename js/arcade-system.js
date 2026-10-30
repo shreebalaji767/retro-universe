@@ -17,8 +17,8 @@ if(stats.challenge.played.length>=3)unlocked.add('DAILY-TRIO');
 if(stats.days.length>=7)unlocked.add('WEEKLY-PLAYER');
 stats.achievements=[...unlocked];write('ru-progress',stats);
 }
-const xp=stats.xp||0,level=Math.floor(xp/100)+1,next=level*100;
-const titles={'FIRST-CARTRIDGE':'First Cartridge','ARCADE-EXPLORER':'Arcade Explorer','PIXEL-PRO':'Pixel Pro','UNIVERSE-MASTER':'Universe Master','DAILY-TRIO':'Daily Trio','WEEKLY-PLAYER':'Weekly Player'};
+window.RetroUniverseAchievement=function(key){const defs={'CHECKERS-CAPTURE':{title:'First Capture',xp:25},'CHECKERS-KING':{title:'Crowned',xp:50},'CHECKERS-WIN':{title:'Checkers Champion',xp:100}};const def=defs[key];if(!def)return false;const current=read('ru-progress',{xp:0,achievements:[]});if((current.achievements||[]).includes(key))return false;current.achievements=[...(current.achievements||[]),key];current.xp=(current.xp||0)+def.xp;write('ru-progress',current);const node=document.querySelector('#ru-progression');if(node)node.dataset.achievementUnlocked=key;return true;};\nconst xp=stats.xp||0,level=Math.floor(xp/100)+1,next=level*100;
+const titles={'FIRST-CARTRIDGE':'First Cartridge','ARCADE-EXPLORER':'Arcade Explorer','PIXEL-PRO':'Pixel Pro','UNIVERSE-MASTER':'Universe Master','DAILY-TRIO':'Daily Trio','WEEKLY-PLAYER':'Weekly Player','CHECKERS-CAPTURE':'First Capture','CHECKERS-KING':'Crowned','CHECKERS-WIN':'Checkers Champion'};
 const mount=document.querySelector('#ru-progression');
 if(mount){mount.innerHTML='<div class="ru-progress-head"><strong>LEVEL '+level+'</strong><span>'+xp+' XP</span></div><div class="ru-progress-track" role="progressbar" aria-label="Progress to next level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+(xp%100)+'"><span style="width:'+(xp%100)+'%"></span></div><p>'+((next-xp)+' XP TO LEVEL '+(level+1))+'</p><div class="ru-badge-list">'+(stats.achievements.length?stats.achievements.map(a=>'<span class="player-badge">★ '+titles[a]+'</span>').join(''):'Play games to unlock achievements.')+'</div>'}
 const challenge=document.querySelector('#ru-challenge');
