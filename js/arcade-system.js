@@ -1,6 +1,6 @@
 (()=>{'use strict';
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(f))}catch{return f}},write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
-const all=['2048','asteroids','bomber-maze','breakout','frogger','maze-runner','memory-match','minesweeper','platformer','pong','racer','simon','snake','space-shooter','tetris','tic-tac-toe','checkers'];
+const all=['2048','asteroids','bomber-maze','breakout','frogger','maze-runner','memory-match','minesweeper','platformer','pong','racer','simon','snake','space-shooter','tetris','tic-tac-toe','checkers','chess','solitaire','pinball'];
 const today=()=>new Date().toISOString().slice(0,10),day=today(),id=document.body.dataset.game;
 let stats=read('ru-progress',{xp:0,days:[],played:[],achievements:[],challenge:{date:day,played:[]}});
 if(stats.challenge.date!==day)stats.challenge={date:day,played:[]};
