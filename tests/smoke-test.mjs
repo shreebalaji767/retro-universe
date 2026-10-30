@@ -74,6 +74,16 @@ try {
 } catch (error) {
   failures.push(`Tic-Tac-Toe AI logic test failed: ${error.message}`);
 }
+// Guard the locally persisted portal/profile/game-upgrade surfaces against regressions.
+for (const [file,patterns] of [
+  ['js/portal-enhancements.js',[/catalog-search/,/retro-favorites/,/retro-recent/]],
+  ['js/phase5.js',[/retro-daily-complete/,/retro-tournament/,/retro-settings/]],
+  ['games/racer.html',[/racer-ghost/,/ghost-toggle/]],
+  ['js/game-enhancements.js',[/AudioContext/,/data-effects/,/difficulty/]]
+]) {
+  const source=fs.readFileSync(path.join(root,file),'utf8');
+  for(const pattern of patterns)if(!pattern.test(source))failures.push(`${file}: missing expected feature marker ${pattern}`);
+}
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
   process.exitCode = 1;
