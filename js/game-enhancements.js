@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const body=document.body,isHome=!body.dataset.game;let deferredPrompt=null;
+const body=document.body,isHome=!body.dataset.game;let deferredPrompt=null;const phase5=document.createElement('script');phase5.src=(body.dataset.game?'../js/phase5.js':'js/phase5.js');phase5.defer=true;document.head.append(phase5);
 const install=isHome?document.querySelector('#install'):document.createElement('button');if(install&&!isHome){install.type='button';install.id='ru-install';install.className='ru-utility-button';install.textContent='＋ INSTALL APP';install.setAttribute('aria-label','Install Retro Universe as an app')}
 const net=document.createElement('span');net.id='ru-network';net.className='ru-network';net.setAttribute('role','status');
 function setNetwork(){const online=navigator.onLine;net.textContent=online?'● ONLINE':'● OFFLINE PLAY';net.dataset.online=String(online);net.title=online?'Connection available; cached games can also work offline.':'Offline: cached games remain available.'}
