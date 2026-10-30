@@ -1,13 +1,9 @@
 (()=>{'use strict';
 const root=document.querySelector('#ru-rankings');
 if(!root)return;
-const games=[['snake-best','Snake'],['racer-best','Pixel Racer'],['2048-best','2048 Pixel']];
-const scores=games.map(([key,name])=>({name,score:Number(localStorage.getItem(key)||0)})).filter(x=>Number.isFinite(x.score)&&x.score>0).sort((a,b)=>b.score-a.score);
-const profile=(()=>{try{return JSON.parse(localStorage.getItem('retro-profile')||'{}')}catch{return {}}})();
-const xp=scores.reduce((sum,x)=>sum+Math.min(1000,Math.floor(Math.sqrt(x.score)*10)),0);
-const level=1+Math.floor(xp/250),progress=xp%250;
+const games=[['snake-best','Snake'],['racer-best','Pixel Racer'],['2048-best','2048 Pixel'],['tetris-best','Tetris DX'],['space-shooter-best','Star Blaster'],['breakout-best','Brick Breaker'],['pong-best','Pixel Pong'],['asteroids-best','Pixel Asteroids'],['frogger-best','Pixel Crossing'],['minesweeper-best','Pixel Mines'],['maze-runner-best','Maze Runner'],['platformer-best','Pixel Jumper']];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-root.innerHTML=scores.length?scores.map((x,i)=>'<div class="player-badge">#'+(i+1)+' · '+esc(x.name)+' · '+x.score.toLocaleString()+'</div>').join(''):'<p class="muted">Play Snake, Pixel Racer, or 2048 Pixel to record your first high score.</p>';
-const panel=document.querySelector('#ru-progression');
-if(panel)panel.innerHTML='<strong>'+esc(profile.avatar||'★')+' '+esc(profile.name||'PLAYER ONE')+' · LEVEL '+level+'</strong><p>'+xp.toLocaleString()+' XP earned from local best scores.</p><div class="player-badge">NEXT LEVEL · '+progress+' / 250 XP</div><p class="muted">Progress is calculated from this browser’s saved scores and never uploaded.</p>';
+const scores=games.map(([key,name])=>({name,score:Number(localStorage.getItem(key)||0)})).filter(x=>Number.isFinite(x.score)&&x.score>0).sort((a,b)=>b.score-a.score);
+const xp=Math.max(0,Number((()=>{try{return JSON.parse(localStorage.getItem('ru-progress')||'{}').xp||0}catch{return 0}})()));
+root.innerHTML='<div class="ru-progress-head"><strong>LOCAL HIGH SCORES</strong><span>'+scores.length+' RECORDS</span></div>'+ (scores.length?scores.map((x,i)=>'<div class="player-badge">#'+(i+1)+' · '+esc(x.name)+' · '+x.score.toLocaleString()+'</div>').join(''):'<p class="muted">Set a high score in a supported arcade game to build your rankings.</p>')+'<p class="muted">Arcade XP earned: '+xp.toLocaleString()+' · All records remain on this device.</p>';
 })();
