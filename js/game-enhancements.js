@@ -27,18 +27,5 @@ if(!isHome&&body.dataset.game){
 if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register(body.dataset.game?'../sw.js':'sw.js').catch(()=>{}));
 document.querySelectorAll('canvas').forEach(c=>{c.style.maxWidth='100%';c.style.height='auto';c.style.touchAction='none';c.setAttribute('tabindex','0');if(!c.hasAttribute('aria-label'))c.setAttribute('aria-label','Interactive game board')});
 document.querySelectorAll('button').forEach(b=>{if(!b.hasAttribute('type'))b.type='button';b.style.touchAction='manipulation'});if(userPrefs.sound!==false){document.addEventListener('click',e=>{if(!e.target.closest('button'))return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const ac=new AC(),osc=ac.createOscillator(),gain=ac.createGain();osc.type='square';osc.frequency.value=540;gain.gain.setValueAtTime(.025,ac.currentTime);gain.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.045);osc.connect(gain);gain.connect(ac.destination);osc.start();osc.stop(ac.currentTime+.045);osc.onended=()=>ac.close()}catch(err){}},{passive:true})}const difficulty=document.querySelector('#difficulty');if(difficulty&&['easy','normal','hard'].includes(userPrefs.difficulty)){difficulty.value=userPrefs.difficulty;difficulty.dispatchEvent(new Event('change'))}
-}
- // Optional controller support through the standard Gamepad API (no dependencies).
- if(!isHome){
-  const style=document.createElement('style');style.textContent='.ru-pad-status{font:12px monospace;text-align:center;color:var(--muted,#aaa);margin:8px auto}.ru-pad-status[data-connected=true]{color:var(--accent,#8f8)}';document.head.append(style);
-  const status=document.createElement('p');status.className='ru-pad-status';status.setAttribute('role','status');status.textContent='🎮 Controller ready — connect a gamepad';const main=document.querySelector('main');if(main)main.append(status);
-  const map=new Map([[12,'ArrowUp'],[13,'ArrowDown'],[14,'ArrowLeft'],[15,'ArrowRight'],[0,'Enter'],[1,'Escape'],[2,'Space'],[3,'Space'],[9,'Enter']]);let previous=new Set(),raf=0;
-  const emit=(key,type)=>document.dispatchEvent(new KeyboardEvent(type,{key,code:key,bubbles:true,cancelable:true}));
-  function poll(){const pads=Array.from(navigator.getGamepads?navigator.getGamepads():[]).filter(Boolean),pad=pads.find(p=>p.connected);
-   if(pad){status.dataset.connected='true';status.textContent='🎮 Controller connected · D-pad/stick · A/Start · B/Back';const now=new Set();pad.buttons.forEach((b,i)=>{if(b.pressed&&map.has(i))now.add(map.get(i))});const a=pad.axes||[];if(a[0]<-.5)now.add('ArrowLeft');if(a[0]>.5)now.add('ArrowRight');if(a[1]<-.5)now.add('ArrowUp');if(a[1]>.5)now.add('ArrowDown');now.forEach(k=>{if(!previous.has(k))emit(k,'keydown')});previous.forEach(k=>{if(!now.has(k))emit(k,'keyup')});previous=now;
-   }else{previous.forEach(k=>emit(k,'keyup'));previous.clear();status.dataset.connected='false';status.textContent='🎮 Controller ready — connect a gamepad'}
-   raf=requestAnimationFrame(poll)}
-  if(navigator.getGamepads)raf=requestAnimationFrame(poll);addEventListener('pagehide',()=>cancelAnimationFrame(raf),{once:true});
-  addEventListener('gamepadconnected',()=>{status.textContent='🎮 Gamepad detected — press a button'});addEventListener('gamepaddisconnected',()=>{status.textContent='🎮 Controller disconnected'});
- }
+const gamepadScript=document.createElement('script');gamepadScript.src=(body.dataset.game?'../js/gamepad-controls.js':'js/gamepad-controls.js');document.head.append(gamepadScript);
 })();
