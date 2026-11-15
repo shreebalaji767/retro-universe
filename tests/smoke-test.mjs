@@ -160,6 +160,13 @@ for (const [file,markers] of [
  const source=fs.readFileSync(path.join(root,'games/pong.html'),'utf8');
  for(const marker of ["let py=190,cy=190,bx=360,by=240,vx=4,vy=2,ps=0,cs=0,keys={},running=true,paused=false,mode='local',rally=0,rafId=0","if(running&&!paused)rafId=requestAnimationFrame(loop)","cancelAnimationFrame(rafId);ps=cs=0"])if(!source.includes(marker))failures.push('Pong: missing single-loop lifecycle guard '+marker);
 }
+// Tetris must persist the best score regardless of whether game over follows a normal spawn or a HOLD swap.
+{
+  const source=fs.readFileSync(path.join(root,'games/tetris.html'),'utf8');
+  if(!source.includes('function finish(){run=false;over=true;'))failures.push('Tetris: missing shared game-over finalizer');
+  if(!source.includes('if(hit())finish();draw()}'))failures.push('Tetris: HOLD collision bypasses best-score finalization');
+  if(!source.includes("localStorage.setItem('retro-tetris-best',String(best))"))failures.push('Tetris: game-over best score is not persisted');
+}
 // Regression guards for input focus, timers, frame-rate fairness and restart state.
 for (const [file,markers] of [
   ['games/2048.html',["e.target?.tagName","e.target?.isContentEditable"]],
@@ -187,7 +194,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v68'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v69'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
