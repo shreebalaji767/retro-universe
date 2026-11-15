@@ -250,6 +250,11 @@ for (const [file,markers] of [
     if(source.includes('.sort(()=>Math.random()-.5)'))failures.push('Memory Match: biased random sort comparator remains');
   }
 }
+// Frogger restarts must reset the keyboard-repeat clock with the simulation tick.
+{
+ const source=fs.readFileSync(path.join(root,'games/frogger.html'),'utf8');
+ if(!source.includes('score=0;tick=0;lastMove=0;over=false;'))failures.push('Frogger: restart leaves stale movement cooldown from the previous run');
+}
 // Asteroids collision distance must respect the toroidal screen edges.
 {
  const source=fs.readFileSync(path.join(root,'games/asteroids.html'),'utf8');
@@ -282,7 +287,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v87'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v88'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
