@@ -54,8 +54,9 @@ try {
   const stale=chess.fromFEN('7k/5Q2/6K1/8/8/8/8/8 b - - 0 1');
   if(!chess.status(stale).stalemate)failures.push('Chess stalemate detection failed');
   if(!chess.status(chess.fromFEN('4k3/8/8/8/8/8/8/4K3 w - - 150 76')).draw75)failures.push('Chess automatic 75-move draw detection failed');
-  if(!chess.status(start,3).drawRepetition||chess.status(start,2).drawRepetition)failures.push('Chess threefold repetition threshold failed');
-  const kiwipete=chess.fromFEN('r3k2r/p1ppqpb1/bn2pnp1/2pP4/1p2P3/2N2N2/PPQBBPPP/R3K2R w KQkq - 0 1');
+  if(!chess.status(start,3).drawRepetition||chess.status(start,2).drawRepetition)failures.push('Chess threefold draw-claim threshold failed');
+  if(!chess.status(start,5).drawFivefold||chess.status(start,4).drawFivefold)failures.push('Chess automatic fivefold repetition threshold failed');
+  const kiwipete=chess.fromFEN('r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1');
   const kiwi1=chess.perft(kiwipete,1);if(kiwi1!==48)failures.push('Chess Kiwipete legal move count failed: expected 48, got '+kiwi1+'; moves '+chess.legalMoves(kiwipete).map(m=>String.fromCharCode(97+m.from.c)+(8-m.from.r)+String.fromCharCode(97+m.to.c)+(8-m.to.r)+(m.castle||'')).join(','));
   const kiwi2=chess.perft(kiwipete,2);if(kiwi2!==2039)failures.push('Chess Kiwipete depth-2 move count failed: expected 2039, got '+kiwi2);
 } catch(error) { failures.push('Chess engine tests failed: '+error.message); }
@@ -125,7 +126,7 @@ for (const [file,patterns] of [
 }
 // Every head-to-head game must retain both local and computer-opponent modes.
 for (const [file, markers] of [
-  ['games/chess.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', 'RetroChess.bestMove', 'threefold repetition', 'function rebuildRepetitions()']],
+  ['games/chess.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', 'RetroChess.bestMove', 'CLAIM DRAW', 'threefold repetition', 'function rebuildRepetitions()']],
   ['games/checkers.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', 'function aiTurn()', 'function bestComputerMove(']],
   ['games/pong.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', "if(mode==='cpu')"]],
   ['games/tic-tac-toe.html', ['TWO PLAYERS', 'VS COMPUTER', 'RetroGame.chooseTicTacToeMove']]
@@ -185,7 +186,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v61'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v62'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
