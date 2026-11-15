@@ -126,7 +126,7 @@ for (const [file,patterns] of [
 }
 // Every head-to-head game must retain both local and computer-opponent modes.
 for (const [file, markers] of [
-  ['games/chess.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', 'RetroChess.bestMove', 'CLAIM DRAW', 'threefold repetition', 'function rebuildRepetitions()']],
+  ['games/chess.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', 'RetroChess.bestMove', 'CLAIM DRAW', 'threefold repetition', 'function rebuildRepetitions()', 'updateClaimButton(st);return true']],
   ['games/checkers.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', 'function aiTurn()', 'function bestComputerMove(']],
   ['games/pong.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', "if(mode==='cpu')"]],
   ['games/tic-tac-toe.html', ['TWO PLAYERS', 'VS COMPUTER', 'RetroGame.chooseTicTacToeMove']]
@@ -186,7 +186,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v62'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v63'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
