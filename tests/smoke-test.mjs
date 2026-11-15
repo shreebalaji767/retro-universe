@@ -175,6 +175,7 @@ for (const [file,markers] of [
 // Regression guards for input focus, timers, frame-rate fairness and restart state.
 for (const [file,markers] of [
   ['games/2048.html',["e.target?.tagName","e.target?.isContentEditable"]],
+  ['games/tic-tac-toe.html',['cpuTimer=null,roundId=0','const token=roundId;cpuTimer=setTimeout','roundId++;if(cpuTimer!==null){clearTimeout(cpuTimer);cpuTimer=null}']],
   ['games/breakout.html',["function reset(){cancelAnimationFrame(raf);keys={};dragging=false;","addEventListener('blur',()=>keys={})"]],
   ['games/maze-runner.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt","function elapsedSeconds()","const elapsed=elapsedSeconds();"]],
   ['games/minesweeper.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt","const safe=Array.from({length:N*N},(_,n)=>n).filter(n=>n!==i&&!mines.has(n))","Date.now()-startAt-pausedMs-(hiddenAt?Date.now()-hiddenAt:0)"]],
@@ -199,7 +200,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v72'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v73'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
