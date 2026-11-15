@@ -55,7 +55,7 @@ try {
   if(!chess.status(stale).stalemate)failures.push('Chess stalemate detection failed');
   if(!chess.status(chess.fromFEN('4k3/8/8/8/8/8/8/4K3 w - - 150 76')).draw75)failures.push('Chess automatic 75-move draw detection failed');
   if(!chess.status(start,3).drawRepetition||chess.status(start,2).drawRepetition)failures.push('Chess threefold repetition threshold failed');
-  const kiwipete=chess.fromFEN('r3k2r/p1ppqpb1/bn2pnp1/2pP3/1p2P3/2N2N2/PPQBBPPP/R3K2R w KQkq - 0 1');
+  const kiwipete=chess.fromFEN('r3k2r/p1ppqpb1/bn2pnp1/2pP4/1p2P3/2N2N2/PPQBBPPP/R3K2R w KQkq - 0 1');
   if(chess.perft(kiwipete,1)!==48)failures.push('Chess Kiwipete legal move count failed');
   if(chess.perft(kiwipete,2)!==2039)failures.push('Chess Kiwipete depth-2 move count failed');
 } catch(error) { failures.push('Chess engine tests failed: '+error.message); }
