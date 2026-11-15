@@ -118,6 +118,16 @@ for (const [file,patterns] of [
   const source=fs.readFileSync(path.join(root,file),'utf8');
   for(const pattern of patterns)if(!pattern.test(source))failures.push(`${file}: missing expected feature marker ${pattern}`);
 }
+// Every head-to-head game must retain both local and computer-opponent modes.
+for (const [file, markers] of [
+  ['games/chess.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', 'RetroChess.bestMove']],
+  ['games/checkers.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', 'function aiTurn()', 'function bestComputerMove(']],
+  ['games/pong.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', "if(mode==='cpu')"]],
+  ['games/tic-tac-toe.html', ['TWO PLAYERS', 'VS COMPUTER', 'RetroGame.chooseTicTacToeMove']]
+]) {
+  const source=fs.readFileSync(path.join(root,file),'utf8');
+  for (const marker of markers) if (!source.includes(marker)) failures.push(file+': missing required player mode or computer opponent: '+marker);
+}
 // Keep the checkers computer player tactical: evaluate capture chains and avoid unsafe landings.
 {
   const source=fs.readFileSync(path.join(root,'games/checkers.html'),'utf8');
