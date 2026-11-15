@@ -255,6 +255,13 @@ for (const [file,markers] of [
  const source=fs.readFileSync(path.join(root,'games/frogger.html'),'utf8');
  if(!source.includes('score=0;tick=0;lastMove=0;over=false;'))failures.push('Frogger: restart leaves stale movement cooldown from the previous run');
 }
+// Platformer must clear held movement/jump inputs when focus is lost.
+{
+ const source=fs.readFileSync(path.join(root,'games/platformer.html'),'utf8');
+ if(!source.includes("addEventListener('blur',()=>keys={});"))failures.push('Platformer: held controls can remain stuck after the browser loses focus');
+ const visibility=source.slice(source.indexOf("document.addEventListener('visibilitychange'"),source.indexOf("reset();</script>"));
+ if(!visibility.includes('if(document.hidden){keys={};cancelAnimationFrame(raf)}'))failures.push('Platformer: hidden-tab transition does not clear held controls before pausing');
+}
 // Asteroids collision distance must respect the toroidal screen edges.
 {
  const source=fs.readFileSync(path.join(root,'games/asteroids.html'),'utf8');
@@ -287,7 +294,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v88'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v89'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
