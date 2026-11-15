@@ -56,6 +56,10 @@ try {
   if(!chess.status(chess.fromFEN('4k3/8/8/8/8/8/8/4K3 w - - 150 76')).draw75)failures.push('Chess automatic 75-move draw detection failed');
   if(!chess.status(start,3).drawRepetition||chess.status(start,2).drawRepetition)failures.push('Chess threefold draw-claim threshold failed');
   if(!chess.status(start,5).drawFivefold||chess.status(start,4).drawFivefold)failures.push('Chess automatic fivefold repetition threshold failed');
+  const twoKnights=chess.fromFEN('7k/8/8/8/8/8/NN6/4K3 w - - 0 1');
+  if(!chess.status(twoKnights).insufficient)failures.push('Chess K+NN vs K must be recognized as a dead position');
+  const knightsEach=chess.fromFEN('7k/8/8/8/8/8/Nn6/4K3 w - - 0 1');
+  if(chess.status(knightsEach).insufficient)failures.push('Chess K+N vs K+N must not be misclassified as insufficient material');
   const kiwipete=chess.fromFEN('r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1');
   const kiwi1=chess.perft(kiwipete,1);if(kiwi1!==48)failures.push('Chess Kiwipete legal move count failed: expected 48, got '+kiwi1+'; moves '+chess.legalMoves(kiwipete).map(m=>String.fromCharCode(97+m.from.c)+(8-m.from.r)+String.fromCharCode(97+m.to.c)+(8-m.to.r)+(m.castle||'')).join(','));
   const kiwi2=chess.perft(kiwipete,2);if(kiwi2!==2039)failures.push('Chess Kiwipete depth-2 move count failed: expected 2039, got '+kiwi2);
@@ -337,7 +341,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v94'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v95'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
