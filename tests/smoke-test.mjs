@@ -158,7 +158,7 @@ for (const [file,markers] of [
 // Pong must maintain one animation loop across pause, resume, and restart.
 {
  const source=fs.readFileSync(path.join(root,'games/pong.html'),'utf8');
- for(const marker of ["let py=190,cy=190,bx=360,by=240,vx=4,vy=2,ps=0,cs=0,keys={},running=true,paused=false,mode='local',rally=0,rafId=0","if(running&&!paused)rafId=requestAnimationFrame(loop)","cancelAnimationFrame(rafId);ps=cs=0"])if(!source.includes(marker))failures.push('Pong: missing single-loop lifecycle guard '+marker);
+ for(const marker of ["let py=190,cy=190,bx=360,by=240,vx=4,vy=2,ps=0,cs=0,keys={},running=true,paused=false,mode='local',rally=0,rafId=0","if(running&&!paused)rafId=requestAnimationFrame(loop)","cancelAnimationFrame(rafId);ps=cs=0","addEventListener('blur',()=>keys={})"])if(!source.includes(marker))failures.push('Pong: missing single-loop lifecycle guard '+marker);
 }
 // Solitaire: choosing a different face-up card in the already-selected column must change the selected stack, not silently reject it.
 {
@@ -200,7 +200,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v74'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v75'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
