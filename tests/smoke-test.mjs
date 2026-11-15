@@ -20,6 +20,16 @@ function walk(dir) {
 }
 walk(root);
 const failures = [];
+// Ensure every catalog cartridge remains reachable; Classics has 10 entries.
+for (const [file,minimum] of [['arcade.html',6],['puzzles.html',6],['classics.html',10]]) {
+  const source=fs.readFileSync(path.join(root,file),'utf8');
+  const count=[...source.matchAll(/class=["']portal-game["'][^>]*href=/g)].length;
+  if(count<minimum)failures.push(file+': expected at least '+minimum+' game cards, found '+count);
+}
+const portalCss=fs.readFileSync(path.join(root,'style.css'),'utf8');
+for(const pattern of [/\.catalog-main\{[^}]*overflow-y:auto/s,/\.portal-game-grid\{[^}]*grid-template-rows:none/s,/prefers-reduced-motion:reduce/]) {
+  if(!pattern.test(portalCss))failures.push('style.css: missing responsive/accessibility rule '+pattern);
+}
 const checkedLinks = new Set();
 function checkTarget(fromFile, raw, label) {
   const value = raw.trim();

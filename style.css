@@ -113,3 +113,64 @@ html[data-effects=off] *,html[data-effects=off] *::before,html[data-effects=off]
 .ru-touch-actions{display:flex;gap:8px}
 .ru-touch-actions button{width:48px;height:48px;border-radius:50%;padding:0;background:var(--red);color:white;touch-action:none;user-select:none;-webkit-user-select:none}
 @media(max-width:700px),(pointer:coarse){.ru-touch-pad{display:flex;flex-wrap:wrap}.ru-touch-pad button{min-width:44px;min-height:44px}}
+
+/* Modern retro refresh: responsive catalogs, readable surfaces and accessible motion. */
+:root{--bg:#090f20;--panel:#121d35;--panel2:#1a2b4a;--line:#d9e5ff;--text:#f5f2df;--muted:#b5c4dc;--yellow:#ffd45c;--green:#73e6bd;--red:#ff7186;--blue:#7f9cff;--shadow:#050916}
+body{background-color:var(--bg);background-image:radial-gradient(ellipse at 50% -20%,#263d68 0%,transparent 58%),linear-gradient(135deg,#ffffff08 1px,transparent 1px);background-size:auto,22px 22px}
+.site-header{background:linear-gradient(110deg,#0b1429f5,#101d36f5);border-bottom:1px solid #839ac477;box-shadow:0 8px 28px #02071699;backdrop-filter:blur(14px)}
+.site-nav a{border:1px solid #7185ad66;border-radius:7px;transition:background .2s,border-color .2s,transform .2s,color .2s}
+.site-nav a:hover,.site-nav a.nav-current{border-color:var(--yellow);background:linear-gradient(135deg,#ffe18a,#ffca48);color:#151d31;box-shadow:0 5px 18px #ffcf5540;transform:translateY(-1px)}
+.portal-main{background:radial-gradient(ellipse at 50% 38%,#1b3560 0%,#0d1931 60%,#080f20 100%)}
+.portal-stars{opacity:.28}
+.portal-hero{gap:clamp(8px,1.6vh,17px)}
+.portal-tile{border:1px solid #b7c9e877;border-radius:12px;background:linear-gradient(145deg,#1b2d4c,#101b31);box-shadow:0 12px 28px #02071666,inset 0 1px #ffffff1c;transition:transform .22s,box-shadow .22s,border-color .22s}
+.portal-tile:hover{transform:translateY(-5px);box-shadow:0 18px 36px #02071699,0 0 0 1px #ffd45c55}
+.portal-tile span{filter:drop-shadow(0 4px 0 #080f20)}
+.portal-tile small{color:#c0cde0}
+.catalog-main{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#7188b8 #0a1326;padding-bottom:22px}
+.catalog-heading{padding:clamp(10px,2vh,20px) 12px 6px}
+.catalog-heading h1,.player-main h1{letter-spacing:.02em;text-shadow:0 5px 0 #070d1c,0 0 26px #87aaff35}
+.catalog-heading p:not(.eyebrow){line-height:1.6}
+.portal-game-grid{flex:0 0 auto;min-height:0;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));grid-template-rows:none;grid-auto-rows:minmax(126px,1fr);gap:clamp(10px,1.35vw,16px);padding:4px 4px 10px}
+.portal-game{min-height:126px;border:1px solid #8da4ce66;border-radius:11px;background:linear-gradient(145deg,#192944,#101a30 76%);box-shadow:0 9px 22px #02071670,inset 0 1px #ffffff16;transition:transform .2s,border-color .2s,box-shadow .2s,background .2s}
+.portal-game:hover{border-color:var(--yellow);background:linear-gradient(145deg,#243a5e,#111e36);transform:translateY(-3px);box-shadow:0 15px 28px #020716a6,0 0 0 1px #ffd45c22}
+.game-glyph{border:1px solid #90a7d155;border-radius:9px;background:linear-gradient(145deg,#0b1428,#172746);text-shadow:0 3px 0 #070d1c,0 0 18px #ffd45c35}
+.portal-game strong{font-size:clamp(10px,1.15vw,13px);letter-spacing:.035em}
+.portal-game small{line-height:1.55}
+.play-label{color:var(--green)}
+.catalog-tools{position:relative;z-index:1;gap:9px;margin:2px auto 10px;padding:10px 12px;border:1px solid #8da4ce44;border-radius:10px;background:#111d33cc;box-shadow:0 8px 22px #02071655}
+.catalog-search-label{color:var(--green);letter-spacing:.08em}
+.catalog-tools input[type=search]{border:1px solid #8298c077;border-radius:7px;background:#091326;color:var(--text);padding:10px 12px}
+.catalog-filters button{border:1px solid #8298c077;border-radius:7px;background:#1a2b47;color:#dce6f8;box-shadow:none}
+.catalog-filters button[aria-pressed=true]{background:var(--yellow);border-color:var(--yellow);color:#172036}
+.catalog-count{color:#c2cfe2}
+.catalog-recent{padding:8px 10px;border:1px solid #8298c044;border-radius:8px;background:#111d33aa}
+.catalog-recent a{border-radius:5px;border-color:#8da4ce66;color:var(--yellow)}
+.catalog-favorite{border:1px solid #9eafd1;border-radius:7px;background:#0a1428;color:#ff9bae;box-shadow:0 3px 9px #02071688}
+.back-home{border:1px solid var(--yellow);border-radius:7px;color:var(--yellow);transition:background .2s,color .2s}
+.player-main{scrollbar-width:thin;scrollbar-color:#7188b8 #0a1326}
+.player-stats>div,.player-panel{border:1px solid #8298c066;border-radius:9px;background:linear-gradient(145deg,#182944,#101a30);box-shadow:0 8px 20px #02071666,inset 0 1px #ffffff14}
+button,.button{border-radius:7px;box-shadow:0 4px 0 #a8495c,0 8px 18px #02071655;transition:transform .16s,filter .16s,box-shadow .16s}
+button:hover,.button:hover{filter:brightness(1.08);box-shadow:0 5px 0 #a8495c,0 12px 22px #02071666}
+button:active,.button:active{transform:translateY(2px);box-shadow:0 2px 0 #a8495c}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #fff0a3;outline-offset:3px}
+@media(max-width:650px){
+.site-header{height:auto;min-height:82px;flex-direction:column;gap:8px;padding:8px 10px}
+.site-nav{width:100%;flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;overscroll-behavior-x:contain;padding:2px 2px 7px;scrollbar-width:thin}
+.site-nav a{flex:0 0 auto;padding:8px 10px;font-size:9px}
+.catalog-main{padding:10px 12px 18px}
+.catalog-heading{margin-bottom:10px;padding-top:8px}
+.catalog-heading h1{font-size:clamp(23px,6vw,32px)}
+.portal-game-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(118px,auto);gap:9px}
+.portal-game{grid-template-columns:34px minmax(0,1fr);column-gap:8px;padding:9px 30px 9px 8px;min-height:118px}
+.game-glyph{font-size:22px}
+.portal-game strong{font-size:9px}
+.portal-game small{font-size:8px}
+.catalog-tools{padding:9px;gap:7px}
+.catalog-tools input[type=search]{width:100%;min-height:42px}
+.catalog-filters{gap:6px}
+.catalog-filters button{min-height:38px}
+}
+@media(max-width:360px){.portal-game-grid{grid-template-columns:minmax(0,1fr)}.portal-game{min-height:100px}}
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){.portal-game:hover .game-glyph{transform:translateY(-2px) scale(1.04)}.portal-tile:hover span{transform:translateY(-2px)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
