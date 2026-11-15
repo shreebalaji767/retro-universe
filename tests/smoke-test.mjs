@@ -176,7 +176,7 @@ for (const [file,markers] of [
 for (const [file,markers] of [
   ['games/2048.html',["e.target?.tagName","e.target?.isContentEditable"]],
   ['games/tic-tac-toe.html',['cpuTimer=null,roundId=0','const token=roundId;cpuTimer=setTimeout','roundId++;if(cpuTimer!==null){clearTimeout(cpuTimer);cpuTimer=null}']],
-  ['games/breakout.html',["function reset(){cancelAnimationFrame(raf);keys={};dragging=false;","addEventListener('blur',()=>keys={})"]],
+  ['games/breakout.html',["function reset(){cancelAnimationFrame(raf);keys={};dragging=false;","if(slowFrames===0){ball.vx*=.72;ball.vy*=.72}slowFrames=600","addEventListener('blur',()=>{keys={};dragging=false})"]],
   ['games/maze-runner.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt","function elapsedSeconds()","const elapsed=elapsedSeconds();"]],
   ['games/minesweeper.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt","const safe=Array.from({length:N*N},(_,n)=>n).filter(n=>n!==i&&!mines.has(n))","Date.now()-startAt-pausedMs-(hiddenAt?Date.now()-hiddenAt:0)"]],
   ['games/space-shooter.html',["function reset(){cancelAnimationFrame(raf);keys={};","invuln=1100","f.y>395&&Math.abs(f.x-ship)<25","addEventListener('blur',()=>keys={})"]],
@@ -222,7 +222,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v77'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v78'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
