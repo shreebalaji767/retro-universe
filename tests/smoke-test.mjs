@@ -250,6 +250,13 @@ for (const [file,markers] of [
     if(source.includes('.sort(()=>Math.random()-.5)'))failures.push('Memory Match: biased random sort comparator remains');
   }
 }
+// Solitaire undoing and replaying a completed deal must not award a second win.
+{
+ const source=fs.readFileSync(path.join(root,'games/solitaire.html'),'utf8');
+ if(!source.includes('won=false,winRecorded=false;'))failures.push('Solitaire: per-deal win guard is missing');
+ if(!source.includes('if(!winRecorded){winRecorded=true;wins++;'))failures.push('Solitaire: undo/replay can count the same deal as multiple wins');
+ if(!source.includes('won=false;winRecorded=false;render();'))failures.push('Solitaire: a new deal does not reset its win guard');
+}
 // Snake must reject reversals against the queued direction, not just the last tick direction.
 {
  const source=fs.readFileSync(path.join(root,'games/snake.html'),'utf8');
@@ -259,7 +266,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v85'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v86'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
