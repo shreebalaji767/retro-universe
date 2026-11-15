@@ -145,7 +145,7 @@ for (const [file, markers] of [
 for (const [file,markers] of [
   ['games/bomber-maze.html',['function inFlames(','function hitPlayer(','other.t=0','invuln=35']],
   ['games/frogger.html',['function key(e,down){keys[e.key]=down;if(down&&',"addEventListener('blur',()=>keys={})"]],
-  ['games/bomber-maze.html',["if(!document.hidden){tick++","addEventListener('blur',()=>keys={})","document.addEventListener('visibilitychange',()=>{if(document.hidden)keys={})"]],
+  ['games/bomber-maze.html',["if(!document.hidden){tick++","addEventListener('blur',()=>keys={})","document.addEventListener('visibilitychange',()=>{if(document.hidden)keys={}})"]],
   ['games/simon.html',['function cancelTimers()','generation++','later(next,550)']],
   ['games/snake.html',['return free.length?free[Math.random()*free.length|0]:null','body=eating?snake:snake.slice(0,-1)','BOARD CLEARED!']],
   ['games/asteroids.html',['function reset(){cancelAnimationFrame(raf);keys={};','if(!over&&!paused)raf=requestAnimationFrame(loop)','if(paused)cancelAnimationFrame(raf);else raf=requestAnimationFrame(loop)','addEventListener(\'blur\',()=>keys={})']],
