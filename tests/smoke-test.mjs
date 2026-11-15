@@ -125,6 +125,12 @@ for (const [file,patterns] of [
     if(!source.includes(marker))failures.push('Checkers: missing tactical computer-play rule '+marker);
   }
 }
+// The chess rules engine must be part of the offline application shell.
+{
+  const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
+  if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
+  if(!/retro-universe-v\\d+/.test(sw))failures.push('Service worker: cache version marker missing');
+}
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
   process.exitCode = 1;
