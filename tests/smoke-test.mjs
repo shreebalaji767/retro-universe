@@ -169,10 +169,21 @@ for (const [file,markers] of [
  const source=fs.readFileSync(path.join(root,'games/2048.html'),'utf8');
  if(!source.includes('el.onpointercancel=()=>{touch=null}'))failures.push('2048: pointer cancellation leaves a stale swipe active');
 }
-// Pinball must release held controls on focus loss and expose pause state accessibly.
+// Pinball flipper points are awarded once per continuous contact, not every animation frame.
 {
  const source=fs.readFileSync(path.join(root,'games/pinball.html'),'utf8');
- for(const marker of ["addEventListener('blur',()=>keys={})","setAttribute('aria-pressed',String(paused))","setAttribute('aria-pressed','false')"])if(!source.includes(marker))failures.push('Pinball: missing input-release or pause accessibility guard '+marker);
+ const start=source.indexOf('function shouldScoreFlipperHit(');
+ const end=source.indexOf('function render()',start);
+ if(start<0||end<0)failures.push('Pinball: missing one-hit-per-contact scoring guard');
+ else {
+  const context={};vm.runInNewContext(source.slice(start,end)+'this.scoreHit=shouldScoreFlipperHit;',context);
+  const contacts=[false,false];
+  if(!context.scoreHit(contacts,0)||context.scoreHit(contacts,0))failures.push('Pinball: continuous left-flipper contact can award repeated points');
+  contacts[0]=false;
+  if(!context.scoreHit(contacts,0))failures.push('Pinball: a fresh left-flipper contact does not score');
+  if(!context.scoreHit(contacts,1))failures.push('Pinball: right-flipper contact does not score independently');
+ }
+ for(const marker of ["addEventListener('blur',()=>keys={})","setAttribute('aria-pressed',String(paused))","setAttribute('aria-pressed','false')","if(shouldScoreFlipperHit(flipperContacts,0))score+=10","if(shouldScoreFlipperHit(flipperContacts,1))score+=10"])if(!source.includes(marker))failures.push('Pinball: missing input/scoring guard '+marker);
 }
 // Pong must maintain one animation loop across pause, resume, and restart.
 {
@@ -341,7 +352,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v97'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v98'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
