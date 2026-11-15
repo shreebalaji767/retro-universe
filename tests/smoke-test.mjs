@@ -118,6 +118,13 @@ for (const [file,patterns] of [
   const source=fs.readFileSync(path.join(root,file),'utf8');
   for(const pattern of patterns)if(!pattern.test(source))failures.push(`${file}: missing expected feature marker ${pattern}`);
 }
+// Keep the checkers computer player tactical: evaluate capture chains and avoid unsafe landings.
+{
+  const source=fs.readFileSync(path.join(root,'games/checkers.html'),'utf8');
+  for(const pattern of [/function maxCaptureChain\\(/,/function bestComputerCapture\\(/,/function threatened\\(/]) {
+    if(!pattern.test(source))failures.push('Checkers: missing tactical computer-play rule '+pattern);
+  }
+}
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
   process.exitCode = 1;
