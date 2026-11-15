@@ -155,6 +155,11 @@ for (const [file,markers] of [
   const source=fs.readFileSync(path.join(root,file),'utf8');
   for(const marker of markers)if(!source.includes(marker))failures.push(file+': missing gameplay regression fix '+marker);
 }
+// 2048 must discard an interrupted swipe so it cannot affect a later gesture.
+{
+ const source=fs.readFileSync(path.join(root,'games/2048.html'),'utf8');
+ if(!source.includes('el.onpointercancel=()=>{touch=null}'))failures.push('2048: pointer cancellation leaves a stale swipe active');
+}
 // Pinball must release held controls on focus loss and expose pause state accessibly.
 {
  const source=fs.readFileSync(path.join(root,'games/pinball.html'),'utf8');
@@ -244,7 +249,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v82'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v83'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
