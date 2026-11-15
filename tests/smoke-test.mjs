@@ -326,11 +326,18 @@ for (const [file,markers] of [
  const source=fs.readFileSync(path.join(root,'games/snake.html'),'utf8');
  if(!source.includes('m.x===-next.x&&m.y===-next.y'))failures.push('Snake: rapid queued turns can reverse into the body before the next tick');
 }
+// Tetris must reject movement and HOLD input while its hidden-tab pause is active.
+{
+ const source=fs.readFileSync(path.join(root,'games/tetris.html'),'utf8');
+ if(!source.includes('function act(a){if(!run||paused)return;'))failures.push('Tetris: movement controls remain active while paused');
+ if(!source.includes('function hold(){if(!run||paused||!canHold)return;'))failures.push('Tetris: HOLD remains active while paused');
+ if(!source.includes("if(document.hidden&&run){paused=true;"))failures.push('Tetris: hidden-tab pause guard is missing');
+}
 // The chess rules engine must be part of the offline application shell.
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v93'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v94'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
