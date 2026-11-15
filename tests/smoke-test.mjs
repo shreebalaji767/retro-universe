@@ -148,14 +148,19 @@ for (const [file,markers] of [
   const source=fs.readFileSync(path.join(root,file),'utf8');
   for(const marker of markers)if(!source.includes(marker))failures.push(file+': missing gameplay regression fix '+marker);
 }
+// Pong must maintain one animation loop across pause, resume, and restart.
+{
+ const source=fs.readFileSync(path.join(root,'games/pong.html'),'utf8');
+ for(const marker of ["let py=190,cy=190,bx=360,by=240,vx=4,vy=2,ps=0,cs=0,keys={},running=true,paused=false,mode='local',rally=0,rafId=0","if(running&&!paused)rafId=requestAnimationFrame(loop)","cancelAnimationFrame(rafId);ps=cs=0"])if(!source.includes(marker))failures.push('Pong: missing single-loop lifecycle guard '+marker);
+}
 // Regression guards for input focus, timers, frame-rate fairness and restart state.
 for (const [file,markers] of [
   ['games/2048.html',["e.target?.tagName","e.target?.isContentEditable"]],
   ['games/breakout.html',["function reset(){cancelAnimationFrame(raf);keys={};dragging=false;"]],
-  ['games/maze-runner.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt"]],
+  ['games/maze-runner.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt","function elapsedSeconds()","const elapsed=elapsedSeconds();"]],
   ['games/minesweeper.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt"]],
   ['games/space-shooter.html',["function reset(){cancelAnimationFrame(raf);keys={};"]],
-  ['games/racer.html',["score+=dt/16.67","frameCount++","Math.min(frameCount,"]]
+  ['games/racer.html',["score+=dt/16.67","frameCount++","Math.min(frameCount,","ghostFrames.push(player);traffic=traffic.filter(v=>v.y<550);if(score>=100"]]
 ]) {
   const source=fs.readFileSync(path.join(root,file),'utf8');
   for(const marker of markers)if(!source.includes(marker))failures.push(file+': missing gameplay audit fix '+marker);
@@ -175,7 +180,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v58'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v59'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
