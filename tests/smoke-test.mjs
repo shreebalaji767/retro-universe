@@ -53,6 +53,11 @@ try {
   if(!chess.status(mate).checkmate)failures.push('Chess checkmate detection failed');
   const stale=chess.fromFEN('7k/5Q2/6K1/8/8/8/8/8 b - - 0 1');
   if(!chess.status(stale).stalemate)failures.push('Chess stalemate detection failed');
+  if(!chess.status(chess.fromFEN('4k3/8/8/8/8/8/8/4K3 w - - 150 76')).draw75)failures.push('Chess automatic 75-move draw detection failed');
+  if(!chess.status(start,3).drawRepetition||chess.status(start,2).drawRepetition)failures.push('Chess threefold repetition threshold failed');
+  const kiwipete=chess.fromFEN('r3k2r/p1ppqpb1/bn2pnp1/2pP3/1p2P3/2N2N2/PPQBBPPP/R3K2R w KQkq - 0 1');
+  if(chess.perft(kiwipete,1)!==48)failures.push('Chess Kiwipete legal move count failed');
+  if(chess.perft(kiwipete,2)!==2039)failures.push('Chess Kiwipete depth-2 move count failed');
 } catch(error) { failures.push('Chess engine tests failed: '+error.message); }
 const checkedLinks = new Set();
 function checkTarget(fromFile, raw, label) {
@@ -120,7 +125,7 @@ for (const [file,patterns] of [
 }
 // Every head-to-head game must retain both local and computer-opponent modes.
 for (const [file, markers] of [
-  ['games/chess.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', 'RetroChess.bestMove']],
+  ['games/chess.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', 'RetroChess.bestMove', 'threefold repetition', 'function rebuildRepetitions()']],
   ['games/checkers.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', 'function aiTurn()', 'function bestComputerMove(']],
   ['games/pong.html', ['LOCAL 2 PLAYERS', 'VS COMPUTER', "if(mode==='cpu')"]],
   ['games/tic-tac-toe.html', ['TWO PLAYERS', 'VS COMPUTER', 'RetroGame.chooseTicTacToeMove']]
@@ -180,7 +185,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v60'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v61'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
