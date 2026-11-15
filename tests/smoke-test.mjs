@@ -148,8 +148,8 @@ for (const [file,markers] of [
   ['games/simon.html',['function cancelTimers()','generation++','later(next,550)']],
   ['games/snake.html',['return free.length?free[Math.random()*free.length|0]:null','body=eating?snake:snake.slice(0,-1)','BOARD CLEARED!']],
   ['games/asteroids.html',['function reset(){cancelAnimationFrame(raf);keys={};','if(!over&&!paused)raf=requestAnimationFrame(loop)','if(paused)cancelAnimationFrame(raf);else raf=requestAnimationFrame(loop)','addEventListener(\'blur\',()=>keys={})']],
-  ['games/platformer.html',['function reset(){keys={};','if(document.hidden){keys={};']],
-  ['games/pinball.html',['function newGame(){cancelAnimationFrame(raf);keys={};']]
+  ['games/platformer.html',['function reset(){keys={};','p.x=Math.max(0,Math.min(616,p.x+p.vx));','if(document.hidden){keys={};']],
+  ['games/pinball.html',['function newGame(){cancelAnimationFrame(raf);keys={};','x=bx+nx*40;y=by+ny*40;score+=100;locks[i]=12;']]
 ]) {
   const source=fs.readFileSync(path.join(root,file),'utf8');
   for(const marker of markers)if(!source.includes(marker))failures.push(file+': missing gameplay regression fix '+marker);
@@ -186,7 +186,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v64'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v65'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
