@@ -329,6 +329,21 @@ for (const [file,markers] of [
  const visibility=source.slice(source.indexOf("document.addEventListener('visibilitychange'"),source.indexOf("reset();</script>"));
  if(!visibility.includes('if(document.hidden){keys={};cancelAnimationFrame(raf)}'))failures.push('Platformer: hidden-tab transition does not clear held controls before pausing');
 }
+// Platformer completion requires every collectible, matching the on-screen objective.
+{
+ const source=fs.readFileSync(path.join(root,'games/platformer.html'),'utf8');
+ const start=source.indexOf('function canClearLevel(');
+ const end=source.indexOf('function reset()',start);
+ if(start<0||end<0)failures.push('Platformer: all-coins completion rule is missing');
+ else {
+  const context={};
+  vm.runInNewContext(source.slice(start,end)+'this.canClearLevel=canClearLevel;',context);
+  if(context.canClearLevel(1)!==false)failures.push('Platformer: flag can be cleared while a coin remains');
+  if(context.canClearLevel(0)!==true)failures.push('Platformer: flag cannot be cleared after collecting every coin');
+ }
+ if(!source.includes('p.x>590&&p.y<230&&canClearLevel(coins.length)'))failures.push('Platformer: level-clear path does not enforce the all-coins objective');
+ if(!source.includes('COLLECT ALL '+"'+coins.length+' REMAINING COIN"))failures.push('Platformer: player is not told why the exit is locked');
+}
 // Asteroids collision distance must respect the toroidal screen edges.
 {
  const source=fs.readFileSync(path.join(root,'games/asteroids.html'),'utf8');
@@ -368,7 +383,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v99'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v100'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
