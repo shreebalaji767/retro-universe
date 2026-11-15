@@ -129,7 +129,7 @@ for (const [file,patterns] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!/retro-universe-v\\d+/.test(sw))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v57'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
