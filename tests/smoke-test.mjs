@@ -30,6 +30,30 @@ const portalCss=fs.readFileSync(path.join(root,'style.css'),'utf8');
 for(const pattern of [/\.catalog-main\{[^}]*overflow-y:auto/s,/\.portal-game-grid\{[^}]*grid-template-rows:none/s,/prefers-reduced-motion:reduce/]) {
   if(!pattern.test(portalCss))failures.push('style.css: missing responsive/accessibility rule '+pattern);
 }
+// Verify the chess engine against known move counts and special-rule positions.
+try {
+  const chessContext={window:{}};
+  vm.runInNewContext(fs.readFileSync(path.join(root,'js/chess-engine.js'),'utf8'),chessContext);
+  const chess=chessContext.window.RetroChess;
+  const start=chess.fromFEN();
+  for(const [depth,expected] of [[1,20],[2,400],[3,8902]]) {
+    const actual=chess.perft(start,depth);
+    if(actual!==expected)failures.push('Chess starting-position perft depth '+depth+': expected '+expected+', got '+actual);
+  }
+  const castle=chess.fromFEN('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');
+  const kingMoves=chess.legalMoves(castle).filter(m=>m.from.r===7&&m.from.c===4);
+  if(!kingMoves.some(m=>m.castle==='K')||!kingMoves.some(m=>m.castle==='Q'))failures.push('Chess castling availability failed');
+  const ep=chess.fromFEN('4k3/8/8/3pP3/8/8/8/4K3 w - d6 0 1');
+  const epMove=chess.legalMoves(ep).find(m=>m.enPassant);
+  if(!epMove)failures.push('Chess en passant generation failed');
+  else if(chess.apply(ep,epMove).board[3][3]!==null)failures.push('Chess en passant did not remove the captured pawn');
+  const promo=chess.fromFEN('4k3/P7/8/8/8/8/8/4K3 w - - 0 1');
+  if(chess.legalMoves(promo).filter(m=>m.promotion).length!==4)failures.push('Chess promotion should offer four piece choices');
+  const mate=chess.fromFEN('7k/6Q1/5K2/8/8/8/8/8 b - - 0 1');
+  if(!chess.status(mate).checkmate)failures.push('Chess checkmate detection failed');
+  const stale=chess.fromFEN('7k/5Q2/6K1/8/8/8/8/8 b - - 0 1');
+  if(!chess.status(stale).stalemate)failures.push('Chess stalemate detection failed');
+} catch(error) { failures.push('Chess engine tests failed: '+error.message); }
 const checkedLinks = new Set();
 function checkTarget(fromFile, raw, label) {
   const value = raw.trim();
