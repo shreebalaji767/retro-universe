@@ -196,11 +196,26 @@ for (const [file,markers] of [
     if(!checkers.includes(marker))failures.push('Checkers: missing cancellable computer timer '+marker);
   }
 }
+// Memory Match must use Fisher-Yates rather than Array.sort with a random comparator.
+{
+  const source=fs.readFileSync(path.join(root,'games/memory-match.html'),'utf8');
+  const start=source.indexOf('function shuffleDeck(values)');
+  const end=source.indexOf("if(typeof window!=='undefined')window.RetroMemoryShuffle=shuffleDeck;",start);
+  if(start<0||end<0)failures.push('Memory Match: missing testable Fisher-Yates shuffle');
+  else {
+    const context={window:{},Math:{floor:Math.floor,random:()=>0}};
+    vm.runInNewContext(source.slice(start,end)+'window.RetroMemoryShuffle=shuffleDeck;',context);
+    const input=[1,2,3,4,5,6,7,8],output=context.window.RetroMemoryShuffle(input.slice());
+    if(output.length!==input.length||input.some(value=>!output.includes(value)))failures.push('Memory Match: shuffle did not preserve every card exactly once');
+    if(output.every((value,index)=>value===input[index]))failures.push('Memory Match: deterministic shuffle test did not perform swaps');
+    if(source.includes('.sort(()=>Math.random()-.5)'))failures.push('Memory Match: biased random sort comparator remains');
+  }
+}
 // The chess rules engine must be part of the offline application shell.
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v75'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v76'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
