@@ -270,6 +270,22 @@ for (const [file,markers] of [
  const source=fs.readFileSync(path.join(root,'games/frogger.html'),'utf8');
  if(!source.includes('score=0;tick=0;lastMove=0;over=false;'))failures.push('Frogger: restart leaves stale movement cooldown from the previous run');
 }
+// Frogger's animation loop must stop on game over or pause and restart cleanly on resume.
+{
+ const source=fs.readFileSync(path.join(root,'games/frogger.html'),'utf8');
+ const start=source.indexOf('function shouldContinueLoop(){');
+ const end=source.indexOf('function loop(',start);
+ if(start<0||end<0)failures.push('Frogger: missing explicit animation-loop lifecycle guard');
+ else {
+  const context={over:false,paused:false};
+  vm.runInNewContext(source.slice(start,end)+'this.keepLoop=shouldContinueLoop;',context);
+  if(!context.keepLoop())failures.push('Frogger: active round stops its animation loop');
+  context.over=true;if(context.keepLoop())failures.push('Frogger: game-over state keeps scheduling animation frames');
+  context.over=false;context.paused=true;if(context.keepLoop())failures.push('Frogger: paused state keeps scheduling animation frames');
+ }
+ if(!source.includes('if(shouldContinueLoop())raf=requestAnimationFrame(loop)'))failures.push('Frogger: loop scheduler ignores its stop condition');
+ if(!source.includes('if(paused)cancelAnimationFrame(raf);else raf=requestAnimationFrame(loop)'))failures.push('Frogger: pause/resume does not stop and restart animation frames');
+}
 // Frogger must finish the round after all five safe bays are reached.
 {
  const source=fs.readFileSync(path.join(root,'games/frogger.html'),'utf8');
@@ -352,7 +368,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v98'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v99'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
