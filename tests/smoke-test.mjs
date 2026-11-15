@@ -135,6 +135,19 @@ for (const [file, markers] of [
     if(!source.includes(marker))failures.push('Checkers: missing tactical computer-play rule '+marker);
   }
 }
+// Regression guards for fixes found in the single-player gameplay audit.
+for (const [file,markers] of [
+  ['games/bomber-maze.html',['function inFlames(','function hitPlayer(','other.t=0','invuln=35']],
+  ['games/frogger.html',['function key(e,down){keys[e.key]=down;if(down&&']],
+  ['games/simon.html',['function cancelTimers()','generation++','later(next,550)']],
+  ['games/snake.html',['return free.length?free[Math.random()*free.length|0]:null','body=eating?snake:snake.slice(0,-1)','BOARD CLEARED!']],
+  ['games/asteroids.html',['function reset(){keys={};']],
+  ['games/platformer.html',['function reset(){keys={};','if(document.hidden){keys={};']],
+  ['games/pinball.html',['function newGame(){cancelAnimationFrame(raf);keys={};']]
+]) {
+  const source=fs.readFileSync(path.join(root,file),'utf8');
+  for(const marker of markers)if(!source.includes(marker))failures.push(file+': missing gameplay regression fix '+marker);
+}
 // The chess rules engine must be part of the offline application shell.
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
