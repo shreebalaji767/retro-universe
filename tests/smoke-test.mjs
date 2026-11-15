@@ -178,6 +178,7 @@ for (const [file,markers] of [
   ['games/tic-tac-toe.html',['cpuTimer=null,roundId=0','const token=roundId;cpuTimer=setTimeout','roundId++;if(cpuTimer!==null){clearTimeout(cpuTimer);cpuTimer=null}']],
   ['games/breakout.html',["function reset(){cancelAnimationFrame(raf);keys={};dragging=false;","if(slowFrames===0){ball.vx*=.72;ball.vy*=.72}slowFrames=600","addEventListener('blur',()=>{keys={};dragging=false})"]],
   ['games/maze-runner.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt","function elapsedSeconds()","const elapsed=elapsedSeconds();"]],
+  ['games/maze-runner.html',['function shuffleDirections(values)','let ds=shuffleDirections([[2,0],[-2,0],[0,2],[0,-2]])']],
   ['games/minesweeper.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt","const safe=Array.from({length:N*N},(_,n)=>n).filter(n=>n!==i&&!mines.has(n))","Date.now()-startAt-pausedMs-(hiddenAt?Date.now()-hiddenAt:0)"]],
   ['games/space-shooter.html',["function reset(){cancelAnimationFrame(raf);keys={};","invuln=1100","f.y>395&&Math.abs(f.x-ship)<25","addEventListener('blur',()=>keys={})"]],
   ['games/racer.html',["score+=dt/16.67","frameCount++","Math.min(frameCount,","ghostFrames.push(player);traffic=traffic.filter(v=>v.y<550);if(score>=100"]]
@@ -202,6 +203,22 @@ for (const [file,markers] of [
   if(!source.includes('flashTime=0'))failures.push('Star Blaster: missing initialized render timestamp');
   if(!source.includes('flashTime=t;'))failures.push('Star Blaster: animation frame timestamp is not stored for drawing');
   if(source.includes('Math.floor(t/90)'))failures.push('Star Blaster: draw still references loop-local timestamp t');
+}
+// Maze Runner must randomize carve directions with an unbiased Fisher-Yates shuffle.
+{
+  const source=fs.readFileSync(path.join(root,'games/maze-runner.html'),'utf8');
+  const start=source.indexOf('function shuffleDirections(values)');
+  const end=source.indexOf('if(typeof window!==',start);
+  if(start<0||end<0)failures.push('Maze Runner: missing testable Fisher-Yates direction shuffle');
+  else {
+    const context={window:{},Math:{floor:Math.floor,random:()=>0}};
+    vm.runInNewContext(source.slice(start,end)+'window.RetroMazeShuffle=shuffleDirections;',context);
+    const input=[[2,0],[-2,0],[0,2],[0,-2]];
+    const output=context.window.RetroMazeShuffle(input.map(v=>v.slice()));
+    if(output.length!==4||input.some(value=>!output.some(item=>item[0]===value[0]&&item[1]===value[1])))failures.push('Maze Runner: direction shuffle lost or duplicated a carve direction');
+    if(output.every((value,index)=>value[0]===input[index][0]&&value[1]===input[index][1]))failures.push('Maze Runner: deterministic shuffle test did not perform swaps');
+    if(source.includes('.sort(()=>Math.random()-.5)'))failures.push('Maze Runner: biased random sort comparator remains');
+  }
 }
 // Memory Match must use Fisher-Yates rather than Array.sort with a random comparator.
 {
