@@ -160,11 +160,22 @@ for (const [file,markers] of [
   const source=fs.readFileSync(path.join(root,file),'utf8');
   for(const marker of markers)if(!source.includes(marker))failures.push(file+': missing gameplay audit fix '+marker);
 }
+// Save backup format and asynchronous computer-turn cancellation must remain safe.
+{
+  const system=fs.readFileSync(path.join(root,'js/arcade-system.js'),'utf8');
+  for(const marker of ["format:'retro-universe-save'","version:2","const allowedKey=","file.size>1024*1024","const previous=new Map(","localStorage.setItem(key,typeof value==='string'?value:JSON.stringify(value))"]) {
+    if(!system.includes(marker))failures.push('Save manager: missing backup safety feature '+marker);
+  }
+  const checkers=fs.readFileSync(path.join(root,'games/checkers.html'),'utf8');
+  for(const marker of ['function clearAITimers()','function scheduleAI(callback,delay)','clearAITimers();','scheduleAI(aiTurn,420)']) {
+    if(!checkers.includes(marker))failures.push('Checkers: missing cancellable computer timer '+marker);
+  }
+}
 // The chess rules engine must be part of the offline application shell.
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v57'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v58'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);

@@ -25,5 +25,23 @@ if(mount){mount.innerHTML='<div class="ru-progress-head"><strong>LEVEL '+level+'
 const challenge=document.querySelector('#ru-challenge');
 if(challenge){challenge.innerHTML='<strong>DAILY CHALLENGE</strong><p>Visit 3 different games today to earn 30 XP and unlock Daily Trio.</p><div class="ru-progress-track"><span style="width:'+Math.min(100,stats.challenge.played.length/3*100)+'%"></span></div><p>'+stats.challenge.played.length+'/3 games completed today</p><p class="muted">Challenge progress is saved locally on this device.</p>'}
 const exportBtn=document.querySelector('#ru-export'),importInput=document.querySelector('#ru-import');
-if(exportBtn&&importInput){exportBtn.addEventListener('click',()=>{const data={profile:read('retro-profile',{}),progress:read('ru-progress',{}),records:read('retro-records',{}),favorites:read('retro-favorites',[]),settings:read('retro-settings',{})};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='retro-universe-save-'+day+'.json';a.click();URL.revokeObjectURL(url)});importInput.addEventListener('change',async()=>{const file=importInput.files&&importInput.files[0];if(!file)return;try{const data=JSON.parse(await file.text());if(!data||typeof data!=='object'||!data.progress||!data.records)throw Error('Invalid save');if(!confirm('Import this save and replace local profile, records, favorites and settings?'))return;for(const [src,dst] of [['profile','retro-profile'],['progress','ru-progress'],['records','retro-records'],['favorites','retro-favorites'],['settings','retro-settings']])if(data[src]!==undefined)write(dst,data[src]);location.reload()}catch(e){alert('Could not import save: '+e.message)}finally{importInput.value=''}});}
+if(exportBtn&&importInput){
+  const allowedKey=key=>/^(retro-|ru-)/.test(key)||/^(snake|racer|2048)-best$/.test(key)||key==='racer-ghost';
+  const collectSave=()=>{const values={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&allowedKey(key)){const raw=localStorage.getItem(key);try{values[key]=JSON.parse(raw)}catch{values[key]=raw}}}return values};
+  exportBtn.addEventListener('click',()=>{try{const payload={format:'retro-universe-save',version:2,savedAt:new Date().toISOString(),data:collectSave()};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='retro-universe-save-'+day+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch(error){alert('Could not export save: '+error.message)}});
+  importInput.addEventListener('change',async()=>{const file=importInput.files&&importInput.files[0];if(!file)return;try{
+    if(file.size>1024*1024)throw Error('Save file is larger than the 1 MB safety limit.');
+    const parsed=JSON.parse(await file.text());let incoming;
+    if(parsed&&parsed.format==='retro-universe-save'&&parsed.version===2&&parsed.data&&typeof parsed.data==='object'&&!Array.isArray(parsed.data)){incoming=parsed.data}
+    else if(parsed&&typeof parsed==='object'&&!Array.isArray(parsed)&&parsed.progress&&parsed.records){incoming={};for(const [src,dst] of [['profile','retro-profile'],['progress','ru-progress'],['records','retro-records'],['favorites','retro-favorites'],['settings','retro-settings']])if(parsed[src]!==undefined)incoming[dst]=parsed[src]}
+    else throw Error('This is not a supported Retro Universe save file.');
+    const entries=Object.entries(incoming);if(!entries.length||entries.length>250)throw Error('The save contains no data or too many entries.');
+    for(const [key,value] of entries){if(!allowedKey(key))throw Error('Unsupported save entry: '+key);if(value===undefined||typeof value==='function')throw Error('Invalid data for '+key);if(JSON.stringify(value).length>500000)throw Error('A save entry is too large: '+key)}
+    if(!confirm('Import '+entries.length+' save entries? Existing matching records will be replaced; other local records will be preserved.'))return;
+    const previous=new Map(entries.map(([key])=>[key,localStorage.getItem(key)]));
+    try{for(const [key,value] of entries)localStorage.setItem(key,typeof value==='string'?value:JSON.stringify(value))}
+    catch(error){for(const [key,value] of previous){try{if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,value)}catch{}}throw Error('Browser storage could not accept the save. Your previous data was restored where possible. '+error.message)}
+    location.reload();
+  }catch(error){alert('Could not import save: '+error.message)}finally{importInput.value=''}});
+}
 })();
