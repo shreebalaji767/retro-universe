@@ -56,7 +56,7 @@ try {
   if(!chess.status(chess.fromFEN('4k3/8/8/8/8/8/8/4K3 w - - 150 76')).draw75)failures.push('Chess automatic 75-move draw detection failed');
   if(!chess.status(start,3).drawRepetition||chess.status(start,2).drawRepetition)failures.push('Chess threefold repetition threshold failed');
   const kiwipete=chess.fromFEN('r3k2r/p1ppqpb1/bn2pnp1/2pP4/1p2P3/2N2N2/PPQBBPPP/R3K2R w KQkq - 0 1');
-  const kiwi1=chess.perft(kiwipete,1);if(kiwi1!==48)failures.push('Chess Kiwipete legal move count failed: expected 48, got '+kiwi1);
+  const kiwi1=chess.perft(kiwipete,1);if(kiwi1!==48)failures.push('Chess Kiwipete legal move count failed: expected 48, got '+kiwi1+'; moves '+chess.legalMoves(kiwipete).map(m=>String.fromCharCode(97+m.from.c)+(8-m.from.r)+String.fromCharCode(97+m.to.c)+(8-m.to.r)+(m.castle||'')).join(','));
   const kiwi2=chess.perft(kiwipete,2);if(kiwi2!==2039)failures.push('Chess Kiwipete depth-2 move count failed: expected 2039, got '+kiwi2);
 } catch(error) { failures.push('Chess engine tests failed: '+error.message); }
 const checkedLinks = new Set();
