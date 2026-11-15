@@ -165,7 +165,7 @@ for (const [file,markers] of [
   ['games/2048.html',["e.target?.tagName","e.target?.isContentEditable"]],
   ['games/breakout.html',["function reset(){cancelAnimationFrame(raf);keys={};dragging=false;","addEventListener('blur',()=>keys={})"]],
   ['games/maze-runner.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt","function elapsedSeconds()","const elapsed=elapsedSeconds();"]],
-  ['games/minesweeper.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt"]],
+  ['games/minesweeper.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt","const safe=Array.from({length:N*N},(_,n)=>n).filter(n=>n!==i&&!mines.has(n))","Date.now()-startAt-pausedMs-(hiddenAt?Date.now()-hiddenAt:0)"]],
   ['games/space-shooter.html',["function reset(){cancelAnimationFrame(raf);keys={};","invuln=1100","f.y>395&&Math.abs(f.x-ship)<25","addEventListener('blur',()=>keys={})"]],
   ['games/racer.html',["score+=dt/16.67","frameCount++","Math.min(frameCount,","ghostFrames.push(player);traffic=traffic.filter(v=>v.y<550);if(score>=100"]]
 ]) {
