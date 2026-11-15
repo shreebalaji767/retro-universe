@@ -255,6 +255,14 @@ for (const [file,markers] of [
  const source=fs.readFileSync(path.join(root,'games/frogger.html'),'utf8');
  if(!source.includes('score=0;tick=0;lastMove=0;over=false;'))failures.push('Frogger: restart leaves stale movement cooldown from the previous run');
 }
+// Frogger must finish the round after all five safe bays are reached.
+{
+ const source=fs.readFileSync(path.join(root,'games/frogger.html'),'utf8');
+ if(!source.includes('over,won=false,paused=false'))failures.push('Frogger: win state is missing');
+ if(!source.includes('if(homes.length===5){score+=500;won=true;over=true;keys={};cancelAnimationFrame(raf)}'))failures.push('Frogger: reaching all five homes does not complete the game');
+ if(!source.includes("(won?' · YOU WIN!':over?' · GAME OVER':'')"))failures.push('Frogger: completed rounds are not distinguished from game over');
+ if(!source.includes('over=false;won=false;paused=false;'))failures.push('Frogger: new game does not reset the win state');
+}
 // Star Blaster boss damage and defeat bonuses must immediately persist high scores.
 {
  const source=fs.readFileSync(path.join(root,'games/space-shooter.html'),'utf8');
@@ -307,7 +315,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v90'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v91'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
