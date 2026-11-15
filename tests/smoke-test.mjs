@@ -263,6 +263,21 @@ for (const [file,markers] of [
  if(!source.includes("(won?' · YOU WIN!':over?' · GAME OVER':'')"))failures.push('Frogger: completed rounds are not distinguished from game over');
  if(!source.includes('over=false;won=false;paused=false;'))failures.push('Frogger: new game does not reset the win state');
 }
+// Pixel Racer collision must use the full vertical bounds of both 58px cars.
+{
+ const source=fs.readFileSync(path.join(root,'games/racer.html'),'utf8');
+ const start=source.indexOf('function overlapsPlayer(v){');
+ const end=source.indexOf('function loop(',start);
+ if(start<0||end<0)failures.push('Pixel Racer: player collision helper is missing');
+ else {
+  const context={};
+  vm.runInNewContext(source.slice(start,end)+'this.overlapsPlayer=overlapsPlayer;',context);
+  for(const [y,expected] of [[362,false],[363,true],[420,true],[477,true],[478,false]]) {
+   if(context.overlapsPlayer({y})!==expected)failures.push('Pixel Racer: collision boundary incorrect at traffic y='+y);
+  }
+ }
+ if(!source.includes('traffic.some(v=>v.lane===player&&overlapsPlayer(v))'))failures.push('Pixel Racer: crash detection bypasses accurate car overlap bounds');
+}
 // Star Blaster boss damage and defeat bonuses must immediately persist high scores.
 {
  const source=fs.readFileSync(path.join(root,'games/space-shooter.html'),'utf8');
@@ -315,7 +330,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v91'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v92'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
