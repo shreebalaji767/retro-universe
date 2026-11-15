@@ -195,7 +195,7 @@ for (const [file,markers] of [
   ['games/maze-runner.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt","function elapsedSeconds()","const elapsed=elapsedSeconds();"]],
   ['games/maze-runner.html',['function shuffleDirections(values)','let ds=shuffleDirections([[2,0],[-2,0],[0,2],[0,-2]])']],
   ['games/minesweeper.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt","const safe=Array.from({length:N*N},(_,n)=>n).filter(n=>n!==i&&!mines.has(n))","Date.now()-startAt-pausedMs-(hiddenAt?Date.now()-hiddenAt:0)"]],
-  ['games/space-shooter.html',["function reset(){cancelAnimationFrame(raf);keys={};","invuln=1100","f.y>395&&Math.abs(f.x-ship)<25","addEventListener('blur',()=>keys={})"]],
+  ['games/space-shooter.html',["function reset(){cancelAnimationFrame(raf);keys={};","onclick=()=>{if(!running)return;keys={};paused=!paused;","invuln=1100","f.y>395&&Math.abs(f.x-ship)<25","addEventListener('blur',()=>keys={})"]],
   ['games/racer.html',["score+=dt/16.67","frameCount++","Math.min(frameCount,","ghostFrames.push(player);traffic=traffic.filter(v=>v.y<550);if(score>=100"]]
 ]) {
   const source=fs.readFileSync(path.join(root,file),'utf8');
@@ -330,7 +330,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v92'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v93'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
