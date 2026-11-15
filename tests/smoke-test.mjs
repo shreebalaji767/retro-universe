@@ -149,7 +149,7 @@ for (const [file, markers] of [
 for (const [file,markers] of [
   ['games/bomber-maze.html',['function inFlames(','function hitPlayer(','other.t=0','invuln=35','flames=flames.filter(f=>f.t>0);if(!over)checkEnd();']],
   ['games/frogger.html',['function move(dx,dy){if(over||paused)return;','function key(e,down){keys[e.key]=down;if(down&&',"addEventListener('blur',()=>keys={})"]],
-  ['games/bomber-maze.html',["if(!document.hidden){tick++","addEventListener('blur',()=>keys={})","document.addEventListener('visibilitychange',()=>{if(document.hidden)keys={}})"]],
+  ['games/bomber-maze.html',["function stopLoop(){if(loopTimer!==null){clearTimeout(loopTimer);loopTimer=null}}","function scheduleLoop(){if(!document.hidden&&loopTimer===null&&!over)loopTimer=setTimeout(loop,30)}","function loop(){loopTimer=null;if(document.hidden||over){if(!document.hidden)draw();return}","addEventListener('blur',()=>keys={})","document.addEventListener('visibilitychange',()=>{if(document.hidden){keys={};stopLoop()}else scheduleLoop()})"]],
   ['games/simon.html',['function cancelTimers()','generation++','input.push(i);if(input.length===seq.length){locked=true;later(next,550)}','if(locked)return'] ],
   ['games/snake.html',['return free.length?free[Math.random()*free.length|0]:null','body=eating?snake:snake.slice(0,-1)',"if(!food){run=false;cleared=true;", "cleared?'BOARD CLEARED':score?'GAME OVER':'READY PLAYER ONE'"]],
   ['games/asteroids.html',['function reset(){cancelAnimationFrame(raf);keys={};','if(!over&&!paused)raf=requestAnimationFrame(loop)','if(paused)cancelAnimationFrame(raf);else raf=requestAnimationFrame(loop)','addEventListener(\'blur\',()=>keys={})']],
@@ -341,7 +341,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v95'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v96'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
