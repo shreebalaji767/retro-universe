@@ -155,6 +155,11 @@ for (const [file,markers] of [
   const source=fs.readFileSync(path.join(root,file),'utf8');
   for(const marker of markers)if(!source.includes(marker))failures.push(file+': missing gameplay regression fix '+marker);
 }
+// Minesweeper flood-fill recursion must award a win only once.
+{
+ const source=fs.readFileSync(path.join(root,'games/minesweeper.html'),'utf8');
+ if(!source.includes('if(!over&&opened.size===N*N-M){over=true;clearInterval(timer);wins++;'))failures.push('Minesweeper: recursive reveal can award multiple wins for one cleared field');
+}
 // 2048 must discard an interrupted swipe so it cannot affect a later gesture.
 {
  const source=fs.readFileSync(path.join(root,'games/2048.html'),'utf8');
@@ -249,7 +254,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v83'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v84'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
