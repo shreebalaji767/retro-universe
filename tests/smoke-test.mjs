@@ -255,6 +255,19 @@ for (const [file,markers] of [
  const source=fs.readFileSync(path.join(root,'games/frogger.html'),'utf8');
  if(!source.includes('score=0;tick=0;lastMove=0;over=false;'))failures.push('Frogger: restart leaves stale movement cooldown from the previous run');
 }
+// Star Blaster boss damage and defeat bonuses must immediately persist high scores.
+{
+ const source=fs.readFileSync(path.join(root,'games/space-shooter.html'),'utf8');
+ const bossHit=source.indexOf('boss.hp--;score+=5;');
+ const bossDefeat=source.indexOf("boss=null;score+=100;");
+ if(bossHit<0||bossDefeat<0)failures.push('Star Blaster: boss score paths are missing');
+ else {
+  const hitPath=source.slice(bossHit,bossDefeat);
+  const defeatPath=source.slice(bossDefeat,bossDefeat+260);
+  if(!hitPath.includes("localStorage.setItem('space-shooter-best',String(best))"))failures.push('Star Blaster: boss damage score is not saved as a best score');
+  if(!defeatPath.includes("localStorage.setItem('space-shooter-best',String(best))"))failures.push('Star Blaster: boss defeat bonus is not saved as a best score');
+ }
+}
 // Platformer must clear held movement/jump inputs when focus is lost.
 {
  const source=fs.readFileSync(path.join(root,'games/platformer.html'),'utf8');
@@ -294,7 +307,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v89'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v90'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
