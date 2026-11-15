@@ -163,7 +163,7 @@ for (const [file,markers] of [
 // Save backup format and asynchronous computer-turn cancellation must remain safe.
 {
   const system=fs.readFileSync(path.join(root,'js/arcade-system.js'),'utf8');
-  for(const marker of ["format:'retro-universe-save'","version:2","const allowedKey=","file.size>1024*1024","const previous=new Map(","localStorage.setItem(key,typeof value==='string'?value:JSON.stringify(value))"]) {
+  for(const marker of ["format:'retro-universe-save'","version:2","const allowedKey=","file.size>1024*1024","const previous=new Map(","values[key]=raw"]) {
     if(!system.includes(marker))failures.push('Save manager: missing backup safety feature '+marker);
   }
   const checkers=fs.readFileSync(path.join(root,'games/checkers.html'),'utf8');

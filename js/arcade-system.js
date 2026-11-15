@@ -27,7 +27,7 @@ if(challenge){challenge.innerHTML='<strong>DAILY CHALLENGE</strong><p>Visit 3 di
 const exportBtn=document.querySelector('#ru-export'),importInput=document.querySelector('#ru-import');
 if(exportBtn&&importInput){
   const allowedKey=key=>/^(retro-|ru-)/.test(key)||/^(snake|racer|2048)-best$/.test(key)||key==='racer-ghost';
-  const collectSave=()=>{const values={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&allowedKey(key)){const raw=localStorage.getItem(key);try{values[key]=JSON.parse(raw)}catch{values[key]=raw}}}return values};
+  const collectSave=()=>{const values={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&allowedKey(key)){const raw=localStorage.getItem(key);values[key]=raw}}return values};
   exportBtn.addEventListener('click',()=>{try{const payload={format:'retro-universe-save',version:2,savedAt:new Date().toISOString(),data:collectSave()};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='retro-universe-save-'+day+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch(error){alert('Could not export save: '+error.message)}});
   importInput.addEventListener('change',async()=>{const file=importInput.files&&importInput.files[0];if(!file)return;try{
     if(file.size>1024*1024)throw Error('Save file is larger than the 1 MB safety limit.');
