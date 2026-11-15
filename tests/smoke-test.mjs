@@ -250,6 +250,22 @@ for (const [file,markers] of [
     if(source.includes('.sort(()=>Math.random()-.5)'))failures.push('Memory Match: biased random sort comparator remains');
   }
 }
+// Asteroids collision distance must respect the toroidal screen edges.
+{
+ const source=fs.readFileSync(path.join(root,'games/asteroids.html'),'utf8');
+ const start=source.indexOf('function distance(a,b){');
+ const end=source.indexOf('function loop(',start);
+ if(start<0||end<0)failures.push('Asteroids: wrapped collision-distance helper is missing');
+ else {
+  const context={Math};
+  vm.runInNewContext(source.slice(start,end),context);
+  const d=context.distance({x:2,y:100},{x:718,y:100});
+  if(Math.abs(d-4)>1e-9)failures.push('Asteroids: objects across a horizontal wrap seam are not treated as adjacent');
+  const diagonal=context.distance({x:1,y:1},{x:719,y:479});
+  if(Math.abs(diagonal-Math.sqrt(8))>1e-9)failures.push('Asteroids: diagonal wrap distance is incorrect');
+  if(!source.includes('distance(s,r)<r.r')||!source.includes('distance(ship,r)<r.r+8'))failures.push('Asteroids: asteroid collisions do not use wrapped distance');
+ }
+}
 // Solitaire undoing and replaying a completed deal must not award a second win.
 {
  const source=fs.readFileSync(path.join(root,'games/solitaire.html'),'utf8');
@@ -266,7 +282,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v86'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v87'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
