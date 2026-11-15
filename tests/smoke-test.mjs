@@ -196,6 +196,13 @@ for (const [file,markers] of [
     if(!checkers.includes(marker))failures.push('Checkers: missing cancellable computer timer '+marker);
   }
 }
+// Star Blaster's initial draw must not read the loop callback's out-of-scope timestamp.
+{
+  const source=fs.readFileSync(path.join(root,'games/space-shooter.html'),'utf8');
+  if(!source.includes('flashTime=0'))failures.push('Star Blaster: missing initialized render timestamp');
+  if(!source.includes('flashTime=t;'))failures.push('Star Blaster: animation frame timestamp is not stored for drawing');
+  if(source.includes('Math.floor(t/90)'))failures.push('Star Blaster: draw still references loop-local timestamp t');
+}
 // Memory Match must use Fisher-Yates rather than Array.sort with a random comparator.
 {
   const source=fs.readFileSync(path.join(root,'games/memory-match.html'),'utf8');
@@ -215,7 +222,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v76'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v77'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
