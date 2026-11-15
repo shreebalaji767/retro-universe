@@ -143,7 +143,7 @@ for (const [file, markers] of [
 }
 // Regression guards for fixes found in the single-player gameplay audit.
 for (const [file,markers] of [
-  ['games/bomber-maze.html',['function inFlames(','function hitPlayer(','other.t=0','invuln=35']],
+  ['games/bomber-maze.html',['function inFlames(','function hitPlayer(','other.t=0','invuln=35','flames=flames.filter(f=>f.t>0);if(!over)checkEnd();']],
   ['games/frogger.html',['function move(dx,dy){if(over||paused)return;','function key(e,down){keys[e.key]=down;if(down&&',"addEventListener('blur',()=>keys={})"]],
   ['games/bomber-maze.html',["if(!document.hidden){tick++","addEventListener('blur',()=>keys={})","document.addEventListener('visibilitychange',()=>{if(document.hidden)keys={}})"]],
   ['games/simon.html',['function cancelTimers()','generation++','input.push(i);if(input.length===seq.length){locked=true;later(next,550)}','if(locked)return'] ],
@@ -239,7 +239,7 @@ for (const [file,markers] of [
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   if(!sw.includes("'js/chess-engine.js'"))failures.push('Service worker: chess engine missing from offline precache');
-  if(!sw.includes("const CACHE='retro-universe-v80'"))failures.push('Service worker: cache version marker missing');
+  if(!sw.includes("const CACHE='retro-universe-v81'"))failures.push('Service worker: cache version marker missing');
 }
 if (failures.length) {
   console.error(`Smoke tests failed (${failures.length} issue(s)):\n- ${failures.join('\n- ')}`);
