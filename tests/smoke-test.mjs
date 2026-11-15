@@ -148,6 +148,18 @@ for (const [file,markers] of [
   const source=fs.readFileSync(path.join(root,file),'utf8');
   for(const marker of markers)if(!source.includes(marker))failures.push(file+': missing gameplay regression fix '+marker);
 }
+// Regression guards for input focus, timers, frame-rate fairness and restart state.
+for (const [file,markers] of [
+  ['games/2048.html',["e.target?.tagName","e.target?.isContentEditable"]],
+  ['games/breakout.html',["function reset(){cancelAnimationFrame(raf);keys={};dragging=false;"]],
+  ['games/maze-runner.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt"]],
+  ['games/minesweeper.html',["hiddenAt=0,pausedMs=0","pausedMs+=Date.now()-hiddenAt"]],
+  ['games/space-shooter.html',["function reset(){cancelAnimationFrame(raf);keys={};"]],
+  ['games/racer.html',["score+=dt/16.67","frameCount++","Math.floor(frameCount)"]]
+]) {
+  const source=fs.readFileSync(path.join(root,file),'utf8');
+  for(const marker of markers)if(!source.includes(marker))failures.push(file+': missing gameplay audit fix '+marker);
+}
 // The chess rules engine must be part of the offline application shell.
 {
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
